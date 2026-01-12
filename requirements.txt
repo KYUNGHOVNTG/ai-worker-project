@@ -1,0 +1,50 @@
+# FastAPI 웹 프레임워크
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# 비동기 PostgreSQL 드라이버
+asyncpg==0.29.0
+
+# SQLAlchemy 2.0 (ORM)
+sqlalchemy[asyncio]==2.0.25
+
+# Pydantic v2 (데이터 검증)
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# 데이터베이스 마이그레이션
+alembic==1.13.1
+
+# 보안 및 인증
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# HTTP 클라이언트 (외부 API 호출 시)
+httpx==0.26.0
+
+# 날짜/시간 처리
+python-dateutil==2.8.2
+
+# 환경 변수 로딩
+python-dotenv==1.0.0
+
+# 개발 도구
+# ============
+
+# 코드 포맷팅
+black==24.1.1
+isort==5.13.2
+
+# 린팅
+ruff==0.1.13
+mypy==1.8.0
+
+# 테스팅
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+httpx==0.26.0  # 테스트용 HTTP 클라이언트
+
+# 개발 서버 리로딩
+watchfiles==0.21.0
