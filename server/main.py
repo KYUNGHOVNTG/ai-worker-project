@@ -14,6 +14,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from server.app.core.config import settings
 from server.app.core.database import DatabaseManager
+from server.app.core.routers import router as core_router
 from server.app.api.v1.router import api_router
 from server.app.shared.exceptions import ApplicationException
 
@@ -199,6 +200,9 @@ def create_application() -> FastAPI:
     # Router 등록
     # ====================
 
+    # Core 라우터 (인프라 레벨)
+    app.include_router(core_router)
+
     # API v1 라우터
     app.include_router(
         api_router,
@@ -223,24 +227,8 @@ def create_application() -> FastAPI:
             "status": "running",
             "docs": "/docs",
             "api_v1": settings.API_V1_PREFIX,
-        }
-
-    # 헬스체크 엔드포인트
-    @app.get(
-        "/health",
-        tags=["health"],
-        summary="헬스체크",
-    )
-    async def health() -> dict:
-        """
-        헬스체크 엔드포인트
-
-        서비스 상태를 확인합니다.
-        """
-        # TODO: 데이터베이스, 외부 서비스 연결 상태 확인
-        return {
-            "status": "healthy",
-            "environment": settings.ENVIRONMENT,
+            "health": "/core/health",
+            "version_info": "/core/version",
         }
 
     return app

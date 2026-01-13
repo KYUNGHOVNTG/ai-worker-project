@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database } from 'lucide-react';
+import { LoadingOverlay } from './core/loading';
 
 function App() {
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'ok' | 'error'>('loading');
@@ -19,7 +20,11 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-mesh selection:bg-indigo-100">
+    <>
+      {/* 전역 로딩 오버레이 */}
+      <LoadingOverlay />
+
+      <div className="min-h-screen bg-mesh selection:bg-indigo-100">
       {/* 1. 네비게이션 - 플로팅 스타일 */}
       <nav className="sticky top-0 z-50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 bg-white/70 backdrop-blur-xl border border-white/40 rounded-2xl shadow-sm">
@@ -128,7 +133,8 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
 

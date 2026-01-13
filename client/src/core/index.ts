@@ -20,3 +20,10 @@ export { Button, Card, CardHeader, CardBody, CardFooter, Input, Modal } from './
 
 // Layout Components
 export { Header, Sidebar, MainLayout } from './layout';
+
+// Error Handling
+export { ErrorBoundary, ApiErrorHandler } from './errors';
+export type { ApiErrorData } from './errors';
+
+// Loading Management
+export { LoadingOverlay, LoadingManager } from './loading';

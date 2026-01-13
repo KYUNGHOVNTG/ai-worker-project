@@ -9,7 +9,9 @@
  * const response = await apiClient.get('/users');
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { LoadingManager } from '../loading/LoadingManager';
+import { ApiErrorHandler } from '../errors/ApiErrorHandler';
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -39,19 +41,30 @@ class ApiClient {
 
   /**
    * Request/Response Interceptors 설정
+   *
+   * 전역 Loading 및 Error 처리를 자동화합니다.
    */
   private setupInterceptors(): void {
     // Request Interceptor
     this.instance.interceptors.request.use(
       (config) => {
+        // 전역 로딩 시작
+        // config.skipLoading이 true이면 로딩 표시 안 함
+        if (!(config as any).skipLoading) {
+          LoadingManager.show();
+        }
+
         // TODO: 인증 토큰 추가
         // const token = localStorage.getItem('auth_token');
         // if (token) {
         //   config.headers.Authorization = `Bearer ${token}`;
         // }
+
         return config;
       },
       (error) => {
+        // 요청 실패 시 로딩 숨김
+        LoadingManager.hide();
         return Promise.reject(error);
       }
     );
@@ -59,14 +72,27 @@ class ApiClient {
     // Response Interceptor
     this.instance.interceptors.response.use(
       (response) => {
+        // 응답 성공 시 로딩 숨김
+        LoadingManager.hide();
         return response;
       },
-      (error) => {
-        // TODO: 에러 처리 로직
-        // - 401: 인증 만료 -> 로그인 페이지로 리다이렉트
-        // - 403: 권한 없음
-        // - 500: 서버 에러
-        return Promise.reject(error);
+      (error: AxiosError) => {
+        // 응답 실패 시 로딩 숨김
+        LoadingManager.hide();
+
+        // 에러 처리
+        const errorData = ApiErrorHandler.handle(error);
+
+        // 특정 상태 코드별 추가 처리
+        if (ApiErrorHandler.isAuthError(error)) {
+          // TODO: 인증 에러 처리
+          // - 로그인 페이지로 리다이렉트
+          // - 또는 토큰 갱신 시도
+          console.warn('🔐 인증 에러:', errorData.message);
+        }
+
+        // 변환된 에러 데이터 반환
+        return Promise.reject(errorData);
       }
     );
   }
