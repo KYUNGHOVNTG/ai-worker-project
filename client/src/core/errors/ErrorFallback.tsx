@@ -15,7 +15,7 @@
  *    ErrorBoundary의 fallback prop으로 전달하세요.
  */
 
-import { ErrorInfo } from 'react';
+import { type ErrorInfo } from 'react';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 
 interface Props {

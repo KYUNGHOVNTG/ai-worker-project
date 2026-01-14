@@ -9,7 +9,7 @@
  * const response = await apiClient.get('/users');
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { LoadingManager } from '../loading/LoadingManager';
 import { ApiErrorHandler } from '../errors/ApiErrorHandler';
 

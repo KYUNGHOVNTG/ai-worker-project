@@ -12,7 +12,7 @@ import { useSampleStore } from '../store';
 import { Card, CardBody } from '@/core/ui';
 
 export const SampleList: React.FC = () => {
-  const { items, loading, error, fetchItems } = useSampleStore();
+  const { items, loading, error, fetchItems: _fetchItems } = useSampleStore();
 
   useEffect(() => {
     // TODO: 컴포넌트 마운트 시 데이터 로드

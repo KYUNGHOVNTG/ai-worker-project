@@ -160,7 +160,8 @@ export class ApiErrorHandler {
    *
    * @param errorData - 에러 데이터
    */
-  private static logToService(errorData: ApiErrorData): void {
+  // @ts-expect-error - TODO: 향후 사용 예정
+  private static _logToService(_errorData: ApiErrorData): void {
     // Example: Sentry
     // Sentry.captureException(new Error(errorData.message), {
     //   extra: errorData,
@@ -177,7 +178,8 @@ export class ApiErrorHandler {
    *
    * @param errorData - 에러 데이터
    */
-  private static showToast(errorData: ApiErrorData): void {
+  // @ts-expect-error - TODO: 향후 사용 예정
+  private static _showToast(_errorData: ApiErrorData): void {
     // Example: react-hot-toast
     // toast.error(errorData.message);
 

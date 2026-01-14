@@ -14,7 +14,7 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose: _onClose }) => {
   // TODO: 메뉴 아이템 리스트
   // TODO: 활성 메뉴 하이라이트
   // TODO: 접기/펼치기 기능
