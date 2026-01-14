@@ -1,10 +1,49 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database } from 'lucide-react';
+import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database, Book, FileCode, Layout, BookOpen } from 'lucide-react';
 import { LoadingOverlay } from './core/loading';
+import { DocumentViewer } from './components/DocumentViewer';
+
+interface DocumentConfig {
+  title: string;
+  filePath: string;
+}
 
 function App() {
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'ok' | 'error'>('loading');
+  const [documentViewer, setDocumentViewer] = useState<{
+    isOpen: boolean;
+    title: string;
+    filePath: string;
+  }>({
+    isOpen: false,
+    title: '',
+    filePath: '',
+  });
+
+  const documents: Record<string, DocumentConfig> = {
+    architecture: { title: '아키텍처', filePath: '/ARCHITECTURE.md' },
+    serverDocs: { title: '서버 문서', filePath: '/server/README.md' },
+    clientDocs: { title: '클라이언트 문서', filePath: '/client/README.md' },
+    devGuide: { title: '개발 가이드', filePath: '/DEVELOPMENT_GUIDE.md' },
+  };
+
+  const openDocument = (key: keyof typeof documents) => {
+    const doc = documents[key];
+    setDocumentViewer({
+      isOpen: true,
+      title: doc.title,
+      filePath: doc.filePath,
+    });
+  };
+
+  const closeDocument = () => {
+    setDocumentViewer({
+      isOpen: false,
+      title: '',
+      filePath: '',
+    });
+  };
 
   useEffect(() => {
     // 백엔드 연결 확인
@@ -24,6 +63,14 @@ function App() {
       {/* 전역 로딩 오버레이 */}
       <LoadingOverlay />
 
+      {/* 문서 뷰어 */}
+      <DocumentViewer
+        isOpen={documentViewer.isOpen}
+        onClose={closeDocument}
+        title={documentViewer.title}
+        filePath={documentViewer.filePath}
+      />
+
       <div className="min-h-screen bg-mesh selection:bg-indigo-100">
       {/* 1. 네비게이션 - 플로팅 스타일 */}
       <nav className="sticky top-0 z-50 px-6 py-4">
@@ -35,10 +82,23 @@ function App() {
             <span className="text-xl font-bold tracking-tight text-slate-900 uppercase">AI-Worker</span>
           </div>
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-            <a href="#" className="hover:text-indigo-600 transition-colors">분석도구</a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">데이터셋</a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">보안</a>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+            <button onClick={() => openDocument('architecture')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <Layout size={16} />
+              아키텍처
+            </button>
+            <button onClick={() => openDocument('serverDocs')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <FileCode size={16} />
+              서버 문서
+            </button>
+            <button onClick={() => openDocument('clientDocs')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <Book size={16} />
+              클라이언트 문서
+            </button>
+            <button onClick={() => openDocument('devGuide')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <BookOpen size={16} />
+              개발 가이드
+            </button>
           </div>
 
           <div className="flex items-center gap-4">
@@ -61,26 +121,41 @@ function App() {
       <section className="max-w-7xl mx-auto px-6 pt-24 pb-32 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold mb-8">
           <Activity size={16} />
-          <span>New: 2026 AI 모델 업데이트 완료</span>
+          <span>New: 바이브코딩 환경 2026</span>
         </div>
-        
+
         <h1 className="text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-8">
-          데이터 분석을 더 <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">지능적이고 빠르게</span>
+          바이브코딩 웹 템플릿, <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">누구나 쉽게 1분만에 시작</span>
         </h1>
-        
-        <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-12">
-          FastAPI의 고성능 서버와 Supabase의 강력한 보안 인프라를 하나로. 
-          당신의 비즈니스 데이터를 AI가 즉시 통찰력 있는 정보로 전환합니다.
+
+        <p className="text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed mb-12">
+          AI 바이브코딩 환경 웹 서비스 템플릿. 유지보수성 최우선 및 모듈화를 핵심 가치로 하는 바이브 코딩(Vibe Coding) 환경을 제공합니다.
         </p>
+
+        {/* 기술 스택 배지 */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
+          <div className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+            FastAPI
+          </div>
+          <div className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+            SQLAlchemy 2.0
+          </div>
+          <div className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+            React 19
+          </div>
+          <div className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+            Tailwind 4
+          </div>
+        </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button className="w-full sm:w-auto px-10 py-4 bg-indigo-600 text-white text-lg font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 group">
-            분석 프로젝트 생성
+            프로젝트 시작하기
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
           <button className="w-full sm:w-auto px-10 py-4 bg-white text-slate-900 text-lg font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
-            데모 체험하기
+            문서 살펴보기
           </button>
         </div>
       </section>
