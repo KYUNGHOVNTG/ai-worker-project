@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database, Book, FileCode, Layout, BookOpen } from 'lucide-react';
+import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database, Book, FileCode, Layout, BookOpen, Layers, Code } from 'lucide-react';
 import { LoadingOverlay } from './core/loading';
 import { DocumentViewer } from './components/DocumentViewer';
 
@@ -165,31 +165,31 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="group p-8 bg-white/40 backdrop-blur-md border border-white/60 rounded-[32px] hover:bg-white/80 transition-all hover:-translate-y-2">
             <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-              <BarChart3 size={24} />
+              <Layers size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3">실시간 지능형 대시보드</h3>
+            <h3 className="text-xl font-bold mb-3">도메인 플러그인 구조</h3>
             <p className="text-slate-500 leading-relaxed text-sm">
-              데이터의 흐름을 초단위로 분석하여 그래프로 시각화합니다. 2026년형 예측 알고리즘이 탑재되었습니다.
+              새로운 비즈니스 도메인을 독립적으로 추가 가능. 각 도메인은 자체 완결적이며 충돌을 최소화합니다.
             </p>
           </div>
 
           <div className="group p-8 bg-white/40 backdrop-blur-md border border-white/60 rounded-[32px] hover:bg-white/80 transition-all hover:-translate-y-2">
             <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
-              <ShieldCheck size={24} />
+              <Layout size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3">금융급 엔터프라이즈 보안</h3>
+            <h3 className="text-xl font-bold mb-3">계층화된 아키텍처</h3>
             <p className="text-slate-500 leading-relaxed text-sm">
-              Supabase RLS와 고도화된 토큰 시스템을 통해 모든 데이터 접근 권한을 철저하게 관리합니다.
+              Router-Service-Provider-Calculator-Formatter 구조로 명확한 책임 분리와 테스트 용이성을 보장합니다.
             </p>
           </div>
 
           <div className="group p-8 bg-white/40 backdrop-blur-md border border-white/60 rounded-[32px] hover:bg-white/80 transition-all hover:-translate-y-2">
             <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 transition-transform">
-              <Database size={24} />
+              <Code size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3">Supabase 하이브리드 클라우드</h3>
+            <h3 className="text-xl font-bold mb-3">타입 안전성 & 비동기 최적화</h3>
             <p className="text-slate-500 leading-relaxed text-sm">
-              클라우드의 유연함과 로컬의 속도를 동시에. 최적화된 PostgreSQL 연결을 보장합니다.
+              Pydantic v2, SQLAlchemy 2.0, TypeScript로 런타임 에러 최소화. async/await로 높은 처리량 보장.
             </p>
           </div>
         </div>
