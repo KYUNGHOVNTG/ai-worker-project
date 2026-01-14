@@ -135,16 +135,16 @@ function App() {
 
         {/* 기술 스택 배지 */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-          <div className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+          <div className="px-5 py-2.5 bg-slate-800 text-slate-100 font-bold rounded-xl border border-slate-700 hover:bg-slate-700 transition-all">
             FastAPI
           </div>
-          <div className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+          <div className="px-5 py-2.5 bg-slate-700 text-slate-100 font-bold rounded-xl border border-slate-600 hover:bg-slate-600 transition-all">
             SQLAlchemy 2.0
           </div>
-          <div className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+          <div className="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl border border-indigo-500 hover:bg-indigo-500 transition-all">
             React 19
           </div>
-          <div className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
+          <div className="px-5 py-2.5 bg-violet-600 text-white font-bold rounded-xl border border-violet-500 hover:bg-violet-500 transition-all">
             Tailwind 4
           </div>
         </div>

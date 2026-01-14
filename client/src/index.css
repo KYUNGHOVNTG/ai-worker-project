@@ -13,6 +13,187 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Custom Prose Styles for Markdown */
+.prose {
+  color: #334155;
+  max-width: 65ch;
+}
+
+.prose :where(p):not(:where([class~="not-prose"] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  line-height: 1.75;
+}
+
+.prose :where([class~="lead"]):not(:where([class~="not-prose"] *)) {
+  font-size: 1.25em;
+  line-height: 1.6;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.prose :where(a):hover:not(:where([class~="not-prose"] *)) {
+  text-decoration: underline;
+}
+
+.prose :where(strong):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.prose :where(ol):not(:where([class~="not-prose"] *)) {
+  list-style-type: decimal;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose :where(ul):not(:where([class~="not-prose"] *)) {
+  list-style-type: disc;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose :where(li):not(:where([class~="not-prose"] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose :where(h1):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 2.25em;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  line-height: 1.1111111;
+}
+
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.3333333;
+}
+
+.prose :where(h3):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 1.25em;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.6;
+}
+
+.prose :where(h4):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *, pre *)) {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.875em;
+  background-color: #f1f5f9;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *, pre *))::before,
+.prose :where(code):not(:where([class~="not-prose"] *, pre *))::after {
+  content: "";
+}
+
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
+  color: #e2e8f0;
+  background-color: #0f172a;
+  overflow-x: auto;
+  font-weight: 400;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  border-radius: 0.75rem;
+  padding: 1.1428571em 1.7142857em;
+}
+
+.prose :where(pre code):not(:where([class~="not-prose"] *)) {
+  background-color: transparent;
+  border-width: 0;
+  border-radius: 0;
+  padding: 0;
+  font-weight: inherit;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  font-weight: 500;
+  font-style: italic;
+  color: #0f172a;
+  border-left-width: 0.25rem;
+  border-left-color: #e2e8f0;
+  quotes: "\201C""\201D""\2018""\2019";
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+}
+
+.prose :where(hr):not(:where([class~="not-prose"] *)) {
+  border-color: #e2e8f0;
+  border-top-width: 1px;
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.prose :where(table):not(:where([class~="not-prose"] *)) {
+  width: 100%;
+  table-layout: auto;
+  text-align: left;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+}
+
+.prose :where(thead):not(:where([class~="not-prose"] *)) {
+  border-bottom-width: 1px;
+  border-bottom-color: #cbd5e1;
+}
+
+.prose :where(thead th):not(:where([class~="not-prose"] *)) {
+  color: #0f172a;
+  font-weight: 600;
+  vertical-align: bottom;
+  padding-right: 0.5714286em;
+  padding-bottom: 0.5714286em;
+  padding-left: 0.5714286em;
+}
+
+.prose :where(tbody tr):not(:where([class~="not-prose"] *)) {
+  border-bottom-width: 1px;
+  border-bottom-color: #e2e8f0;
+}
+
+.prose :where(tbody td):not(:where([class~="not-prose"] *)) {
+  vertical-align: baseline;
+  padding: 0.5714286em;
+}
+
 
 @keyframes mesh-gradient {
   0% { background-position: 0% 50%; }
