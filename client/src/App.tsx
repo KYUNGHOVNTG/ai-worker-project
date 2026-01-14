@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Activity, ShieldCheck, Zap, ArrowRight, BarChart3, Database, Book, FileCode, Layout, BookOpen, Layers, Code } from 'lucide-react';
 import { LoadingOverlay } from './core/loading';
 import { DocumentViewer } from './components/DocumentViewer';
+import { checkDatabaseConnection } from './domains/system/api';
+import { toast } from './core/utils/toast';
 
 interface DocumentConfig {
   title: string;
@@ -58,6 +60,17 @@ function App() {
     checkConnection();
   }, []);
 
+  // DB 연결 테스트 핸들러
+  const handleDBCheck = async () => {
+    try {
+      const result = await checkDatabaseConnection();
+      toast.success(result.message);
+    } catch (error: any) {
+      const errorMessage = error?.message || 'DB 연결 실패';
+      toast.error(errorMessage);
+    }
+  };
+
   return (
     <>
       {/* 전역 로딩 오버레이 */}
@@ -110,6 +123,14 @@ function App() {
               }`} />
               Node: {connectionStatus === 'ok' ? 'Stable' : 'Offline'}
             </div>
+            <button
+              onClick={handleDBCheck}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all active:scale-95 border border-blue-200"
+              title="Supabase DB 연결 테스트"
+            >
+              <Database size={14} />
+              DB 연결 테스트
+            </button>
             <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all active:scale-95">
               시작하기
             </button>

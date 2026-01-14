@@ -257,7 +257,8 @@ async def analyze_data(request: SampleAnalysisRequest, db: AsyncSession = Depend
 
 - **Python 3.12+** ([다운로드](https://www.python.org/downloads/))
 - **Node.js 18+** ([다운로드](https://nodejs.org/))
-- **PostgreSQL** ([다운로드](https://www.postgresql.org/download/))
+- **Supabase 계정** (권장) - [무료 가입](https://supabase.com)
+- 또는 **PostgreSQL** (로컬 개발) - [다운로드](https://www.postgresql.org/download/)
 
 ### 1️⃣ 백엔드 실행
 
@@ -277,7 +278,19 @@ pip install -r requirements.txt
 cp .env.example .env
 # .env 파일을 열어 데이터베이스 연결 정보 수정
 
-# 5. 데이터베이스 생성 & 초기화 (Supabase, PostgreSQL 선택)
+# 5. Supabase 데이터베이스 설정 (권장)
+# 5-1. https://supabase.com 에서 새 프로젝트 생성
+# 5-2. Settings > Database > Connection string 복사
+# 5-3. .env 파일의 DATABASE_URL에 connection string 붙여넣기
+#      예: DATABASE_URL=postgresql+asyncpg://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+# 5-4. Supabase SQL Editor에서 supabase_schema.sql 파일 내용 실행
+#      (connection_tests 테이블 생성 및 초기 데이터 삽입)
+
+# 대안: 로컬 PostgreSQL 사용
+# 5-1. PostgreSQL 서버 실행
+# 5-2. 데이터베이스 생성: createdb ai_worker_db
+# 5-3. .env 파일에 로컬 연결 정보 입력
+#      예: DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/ai_worker_db
 
 # 6. 백엔드 서버 실행
 python -m server.main
