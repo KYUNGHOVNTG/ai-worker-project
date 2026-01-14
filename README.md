@@ -1,8 +1,8 @@
-# 🚀 AI 데이터 분석 웹 서비스 템플릿
+# 🚀 AI 바이브코딩 환경 웹 서비스 템플릿
 
 > **"유지보수성 최우선" 및 "모듈화"를 핵심 가치로 하는 바이브 코딩(Vibe Coding) 환경**
 
-FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 엔터프라이즈급 풀스택 웹 애플리케이션
+빠른 시작을 위한 FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 풀스택 웹 애플리케이션
 
 ---
 
@@ -22,7 +22,7 @@ FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 엔터프라이즈급
 
 ## 🎯 프로젝트 비전
 
-이 프로젝트는 **확장 가능하고 유지보수하기 쉬운 AI 데이터 분석 웹 서비스**를 위한 생산급(Production-Ready) 풀스택 템플릿입니다.
+이 프로젝트는 **확장 가능하고 유지보수하기 쉬운 AI 바이브코딩 기반 웹 서비스**를 위한 생산급(Production-Ready) 풀스택 템플릿입니다.
 
 ### 왜 이 템플릿인가?
 
@@ -267,7 +267,8 @@ cd ai-worker-project
 
 # 2. Python 가상환경 생성 & 활성화
 python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+.venv\Scripts\activate
 
 # 3. 의존성 설치
 pip install -r requirements.txt
@@ -276,9 +277,7 @@ pip install -r requirements.txt
 cp .env.example .env
 # .env 파일을 열어 데이터베이스 연결 정보 수정
 
-# 5. 데이터베이스 초기화 (Supabase SQL Editor 사용 또는 로컬 PostgreSQL)
-# Supabase: SQL Editor에서 schema.sql 실행
-# 로컬: psql -U postgres -d ai_analysis_db -f schema.sql
+# 5. 데이터베이스 생성 & 초기화 (Supabase, PostgreSQL 선택)
 
 # 6. 백엔드 서버 실행
 python -m server.main
