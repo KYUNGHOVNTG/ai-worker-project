@@ -309,6 +309,7 @@ cp .env.example .env
 #      - 개별 변수(POSTGRES_HOST 등)는 주석 처리 또는 삭제
 #      - DATABASE_URL이 우선순위가 높으므로 이것만 설정하면 됨
 
+
 # 6. 백엔드 서버 실행
 python -m server.main
 # → http://localhost:8000 에서 실행
