@@ -92,7 +92,7 @@ function App() {
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
               <Zap className="text-white w-5 h-5" fill="currentColor" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900 uppercase">AI-Worker</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900 uppercase">vibe-web-starter</span>
           </div>
           
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
@@ -220,7 +220,7 @@ function App() {
       <footer className="border-t border-slate-200 py-12 bg-white/30 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-slate-400 text-sm">
-            © 2026 AI-Worker Project. All rights reserved.
+            © 2026 vibe-web-starter. All rights reserved.
           </div>
           <div className="flex gap-8 text-slate-400 text-sm font-medium">
             <a href="#" className="hover:text-indigo-600">Privacy Policy</a>

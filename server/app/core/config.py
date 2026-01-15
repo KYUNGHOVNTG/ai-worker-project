@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     # Application Settings
     # ====================
     APP_NAME: str = Field(
-        default="AI Data Analysis Service",
+        default="vibe-web-starter",
         description="애플리케이션 이름"
     )
     APP_VERSION: str = Field(
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
         description="PostgreSQL 비밀번호"
     )
     POSTGRES_DB: str = Field(
-        default="ai_analysis_db",
+        default="vibe-web-starter",
         description="PostgreSQL 데이터베이스명"
     )
 

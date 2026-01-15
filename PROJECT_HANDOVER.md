@@ -72,7 +72,7 @@ TypeScript 5.9+
 ## 3. 폴더 구조
 
 ```
-ai-worker-project/
+vibe-web-starter/
 ├── 📁 server/                    # 백엔드 (FastAPI)
 │   ├── main.py                   # 애플리케이션 진입점
 │   └── app/
@@ -558,7 +558,7 @@ export const PaymentPage: React.FC = () => {
 
 ```bash
 # 애플리케이션
-APP_NAME=AI Data Analysis Service
+APP_NAME=vive-web-starter
 DEBUG=True
 ENVIRONMENT=development
 
