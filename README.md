@@ -279,18 +279,36 @@ cp .env.example .env
 # .env 파일을 열어 데이터베이스 연결 정보 수정
 
 # 5. Supabase 데이터베이스 설정 (권장)
-# 5-1. https://supabase.com 에서 새 프로젝트 생성
-# 5-2. Settings > Database > Connection string 복사
-# 5-3. .env 파일의 DATABASE_URL에 connection string 붙여넣기
-#      예: DATABASE_URL=postgresql+asyncpg://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
-# 5-4. Supabase SQL Editor에서 supabase_schema.sql 파일 내용 실행
-#      (connection_tests 테이블 생성 및 초기 데이터 삽입)
 
-# 대안: 로컬 PostgreSQL 사용
-# 5-1. PostgreSQL 서버 실행
-# 5-2. 데이터베이스 생성: createdb ai_worker_db
-# 5-3. .env 파일에 로컬 연결 정보 입력
-#      예: DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/ai_worker_db
+# 5-1. https://supabase.com 에서 새 프로젝트 생성
+#      - 프로젝트명, 데이터베이스 비밀번호, 리전 선택
+#      - 프로젝트 생성 완료까지 2-3분 대기
+
+# 5-2. Supabase SQL Editor에서 초기 테이블 생성
+#      - Dashboard > SQL Editor > New query 클릭
+#      - 프로젝트 루트의 supabase_schema.sql 파일 내용 복사
+#      - 붙여넣기 후 Run 버튼 클릭
+#      - connection_tests 테이블 생성 및 초기 데이터 삽입 확인
+
+# 5-3. Transaction Pooler Connection String 복사 (중요!)
+#      - Settings > Database > Connection string 탭
+#      - Type: URI 선택
+#      - Source: Primary Database 선택
+#      - Method: "Transaction pooler" 선택 (권장, 포트 6543)
+#      - Connection string 복사
+#      - 형식: postgresql://postgres.[PROJECT-ID]:[PASSWORD]@aws-0-xx-xx.pooler.supabase.com:6543/postgres
+
+# 5-4. .env 파일에 DATABASE_URL 설정
+#      - postgresql:// → postgresql+asyncpg:// 로 변경 (asyncpg 드라이버 명시)
+#      - 비밀번호에 특수문자가 있으면 URL 인코딩 필수
+#        예: ! → %21, @ → %40, # → %23
+#      - 예시:
+#        DATABASE_URL=postgresql+asyncpg://postgres.cafquolsrqkhpqejgojd:yourP%40ssw0rd%21@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres
+
+# 5-5. 설정 확인
+#      - 개별 변수(POSTGRES_HOST 등)는 주석 처리 또는 삭제
+#      - DATABASE_URL이 우선순위가 높으므로 이것만 설정하면 됨
+
 
 # 6. 백엔드 서버 실행
 python -m server.main
