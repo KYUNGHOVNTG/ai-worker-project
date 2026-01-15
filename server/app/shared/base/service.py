@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.shared.base.calculator import BaseCalculator
 from server.app.shared.base.formatter import BaseFormatter
-from server.app.shared.base.provider import BaseProvider
+from server.app.shared.base.repository import BaseRepository as BaseProvider
 from server.app.shared.types import ServiceResult
 
 # 제네릭 타입 변수
