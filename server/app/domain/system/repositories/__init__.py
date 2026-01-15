@@ -1,5 +1,5 @@
 """
-System 도메인 Providers
+System 도메인 Repositories
 데이터 조회 로직
 """
 
@@ -9,10 +9,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.domain.system.models import ConnectionTest
-from server.app.shared.base.provider import BaseProvider
+from server.app.shared.base.repository import BaseRepository
 
 
-class ConnectionTestProvider(BaseProvider[None, Optional[ConnectionTest]]):
+class ConnectionTestRepository(BaseRepository[None, Optional[ConnectionTest]]):
     """
     연결 테스트 데이터 조회
     """

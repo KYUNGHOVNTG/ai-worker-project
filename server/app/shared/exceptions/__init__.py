@@ -99,15 +99,19 @@ class ExternalServiceException(ApplicationException):
         super().__init__(message, status_code=502, details=details)
 
 
-class ProviderException(ApplicationException):
+class RepositoryException(ApplicationException):
     """
-    Provider 계층 예외
+    Repository 계층 예외
 
-    데이터 제공자에서 오류가 발생했을 때 사용합니다.
+    데이터 접근 계층에서 오류가 발생했을 때 사용합니다.
     """
 
     def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
         super().__init__(message, status_code=500, details=details)
+
+
+# 하위 호환성을 위한 별칭 (deprecated)
+ProviderException = RepositoryException
 
 
 class CalculatorException(ApplicationException):

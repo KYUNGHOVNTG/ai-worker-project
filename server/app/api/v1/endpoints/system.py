@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.core.database import get_db
-from server.app.domain.system.providers import ConnectionTestProvider
+from server.app.domain.system.repositories import ConnectionTestRepository
 from server.app.domain.system.schemas import DBCheckResponse
 
 router = APIRouter(prefix="/system", tags=["system"])
@@ -40,9 +40,9 @@ async def check_database_connection(
         HTTPException: 데이터베이스 조회 실패 시 500 에러
     """
     try:
-        # Provider를 사용하여 데이터 조회
-        provider = ConnectionTestProvider(db)
-        connection_test = await provider.provide()
+        # Repository를 사용하여 데이터 조회
+        repository = ConnectionTestRepository(db)
+        connection_test = await repository.provide()
 
         if connection_test is None:
             raise HTTPException(

@@ -15,7 +15,7 @@ Presentation Layer (API)
     ↓
 Business Logic Layer (Service)
     ↓
-Data Access Layer (Provider)
+Data Access Layer (Repository)
     ↓
 Database
 ```
@@ -42,18 +42,18 @@ Database
 
 ### 1. Facade Pattern (Service)
 
-Service 클래스는 Facade 역할을 수행하여 Provider, Calculator, Formatter의 복잡성을 숨깁니다.
+Service 클래스는 Facade 역할을 수행하여 Repository, Calculator, Formatter의 복잡성을 숨깁니다.
 
 ```python
 class SampleDomainService(BaseService):
     def __init__(self, db):
-        self.provider = SampleDataProvider(db)
+        self.repository = SampleDataRepository(db)
         self.calculator = SampleAnalysisCalculator()
         self.formatter = SampleResponseFormatter()
 
     async def execute(self, request):
         # 1. 데이터 조회
-        data = await self.provider.provide(...)
+        data = await self.repository.provide(...)
 
         # 2. 계산/분석
         result = await self.calculator.calculate(...)
@@ -64,23 +64,23 @@ class SampleDomainService(BaseService):
         return response
 ```
 
-### 2. Strategy Pattern (Provider)
+### 2. Strategy Pattern (Repository)
 
-Provider는 Strategy Context 역할을 하여 다양한 데이터 소스 전략을 캡슐화합니다.
+Repository는 Strategy Context 역할을 하여 다양한 데이터 소스 전략을 캡슐화합니다.
 
 ```python
-# 데이터베이스 Provider
-class DatabaseProvider(BaseProvider):
+# 데이터베이스 Repository
+class DatabaseRepository(BaseRepository):
     async def provide(self, input_data):
         return await self.db.execute(...)
 
-# API Provider
-class APIProvider(BaseProvider):
+# API Repository
+class APIRepository(BaseRepository):
     async def provide(self, input_data):
         return await self.http_client.get(...)
 
-# 파일 Provider
-class FileProvider(BaseProvider):
+# 파일 Repository
+class FileRepository(BaseRepository):
     async def provide(self, input_data):
         return await self.read_file(...)
 ```
@@ -138,7 +138,7 @@ async def analyze_data(
 ### Service (Business Logic Layer)
 
 **책임**:
-- Provider, Calculator, Formatter 조율
+- Repository, Calculator, Formatter 조율
 - 비즈니스 로직 흐름 제어
 - 트랜잭션 관리
 - 권한 검증
@@ -148,7 +148,7 @@ async def analyze_data(
 - 반드시 BaseService 상속
 - execute() 메서드 구현 필수
 - 계산 로직은 Calculator에 위임
-- 데이터 조회는 Provider에 위임
+- 데이터 조회는 Repository에 위임
 
 **예시**:
 ```python
@@ -158,7 +158,7 @@ class SampleDomainService(BaseService[Request, Response]):
         await self.validate_request(request)
 
         # 2. 데이터 조회
-        data = await self.provider.provide(...)
+        data = await self.repository.provide(...)
 
         # 3. 계산
         result = await self.calculator.calculate(...)
@@ -169,7 +169,7 @@ class SampleDomainService(BaseService[Request, Response]):
         return ServiceResult.ok(response)
 ```
 
-### Provider (Data Access Layer)
+### Repository (Data Access Layer)
 
 **책임**:
 - 데이터베이스 쿼리
@@ -178,14 +178,14 @@ class SampleDomainService(BaseService[Request, Response]):
 - 캐시 조회
 
 **규칙**:
-- 반드시 BaseProvider 상속
+- 반드시 BaseRepository 상속
 - provide() 메서드 구현 필수
 - 순수 데이터 조회만 (계산 로직 금지)
 - 비즈니스 로직 없음
 
 **예시**:
 ```python
-class SampleDataProvider(BaseProvider[Input, Output]):
+class SampleDataRepository(BaseRepository[Input, Output]):
     async def provide(self, input_data):
         stmt = select(SampleDataModel).where(...)
         result = await self.db.execute(stmt)
@@ -277,9 +277,9 @@ class SampleResponseFormatter(BaseFormatter[Input, Output]):
 2. Router → Service
    service.execute(request)
 
-3. Service → Provider
-   provider.provide(ProviderInput(data_id=1))
-   ← ProviderOutput(value=42.5, score=0.85)
+3. Service → Repository
+   repository.provide(RepositoryInput(data_id=1))
+   ← RepositoryOutput(value=42.5, score=0.85)
 
 4. Service → Calculator
    calculator.calculate(CalculatorInput(value=42.5, ...))
@@ -318,21 +318,21 @@ class SampleResponseFormatter(BaseFormatter[Input, Output]):
 server/app/domain/my_domain/
 ├── models/         # SQLAlchemy 모델
 ├── schemas/        # Pydantic 스키마
-├── providers/      # Provider 구현
+├── repositories/      # Repository 구현
 ├── calculators/    # Calculator 구현
 ├── formatters/     # Formatter 구현
 └── service.py      # Service 구현
 ```
 
-### 2. 새 Provider 전략 추가
+### 2. 새 Repository 전략 추가
 
 ```python
-class CacheProvider(BaseProvider):
+class CacheRepository(BaseRepository):
     """캐시에서 데이터 조회"""
     async def provide(self, input_data):
         return await self.cache.get(input_data.key)
 
-class MLModelProvider(BaseProvider):
+class MLModelRepository(BaseRepository):
     """ML 모델 추론 결과 제공"""
     async def provide(self, input_data):
         return await self.model.predict(input_data.features)
@@ -360,7 +360,7 @@ class TimeSeriesCalculator(BaseCalculator):
 
 1. **각 계층의 책임을 명확히 준수**
 2. **비즈니스 로직은 Service에 집중**
-3. **Provider는 데이터 조회만**
+3. **Repository는 데이터 조회만**
 4. **Calculator는 순수 함수로**
 5. **에러는 적절한 예외 클래스 사용**
 6. **모든 클래스에 Docstring 작성**
@@ -369,7 +369,7 @@ class TimeSeriesCalculator(BaseCalculator):
 ### DON'T
 
 1. **Router에 비즈니스 로직 작성 금지**
-2. **Provider에서 계산 로직 작성 금지**
+2. **Repository에서 계산 로직 작성 금지**
 3. **Calculator에서 DB 접근 금지**
 4. **절차지향 함수 사용 금지**
 5. **하위 계층이 상위 계층 참조 금지**
@@ -473,7 +473,7 @@ class ExternalLoggingService:
 
 ### 3. 캐싱
 
-- Provider 레벨에서 캐싱
+- Repository 레벨에서 캐싱
 - 계산 결과 캐싱 (Calculator)
 - API 응답 캐싱 (필요시)
 
@@ -555,7 +555,7 @@ LoadingManager.hide();
 
 ### 1. 단위 테스트
 
-- Provider, Calculator, Formatter 개별 테스트
+- Repository, Calculator, Formatter 개별 테스트
 - 모의 객체 사용
 - 순수 함수 테스트 용이
 
@@ -586,7 +586,7 @@ async def analyze_data(data_id: int):
 ```python
 class AnalysisService(BaseService):
     async def execute(self, request):
-        data = await self.provider.provide(...)
+        data = await self.repository.provide(...)
         result = await self.calculator.calculate(...)
         response = await self.formatter.format(...)
         return ServiceResult.ok(response)

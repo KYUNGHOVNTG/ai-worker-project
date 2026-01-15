@@ -46,7 +46,7 @@ server/
     ├── shared/                      # 🔗 공유 컴포넌트
     │   ├── base/                    # 추상 베이스 클래스
     │   │   ├── service.py           # BaseService (Facade + Template Method)
-    │   │   ├── provider.py          # BaseProvider (Data Access)
+    │   │   ├── repository.py          # BaseRepository (Data Access)
     │   │   ├── calculator.py        # BaseCalculator (Pure Logic)
     │   │   └── formatter.py         # BaseFormatter (Presentation)
     │   ├── exceptions/              # 커스텀 예외 계층구조
@@ -59,7 +59,7 @@ server/
     │       ├── service.py           # 도메인 서비스 (오케스트레이터)
     │       ├── models/              # SQLAlchemy 모델
     │       ├── schemas/             # Pydantic 스키마 (Request/Response)
-    │       ├── providers/           # 데이터 조회 레이어
+    │       ├── repositories/           # 데이터 조회 레이어
     │       ├── calculators/         # 비즈니스 로직 레이어
     │       └── formatters/          # 응답 포맷팅 레이어
     │
@@ -261,7 +261,7 @@ async def process_payment(
 **위치**: `app/domain/{domain}/service.py`
 
 **책임**:
-- Provider/Calculator/Formatter 조율 (오케스트레이션)
+- Repository/Calculator/Formatter 조율 (오케스트레이션)
 - 트랜잭션 관리 (`async with db.begin()`)
 - 권한 검증 (`check_permissions()` 훅)
 - 에러 핸들링 (try/except → ServiceResult)
@@ -280,18 +280,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from server.app.shared.base import BaseService
 from server.app.shared.types import ServiceResult
 from server.app.domain.payment.schemas import PaymentRequest, PaymentResponse
-from server.app.domain.payment.providers import PaymentDataProvider
+from server.app.domain.payment.repositories import PaymentDataRepository
 from server.app.domain.payment.calculators import PaymentCalculator
 from server.app.domain.payment.formatters import PaymentResponseFormatter
 from server.app.shared.exceptions import BusinessLogicException
 
 class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
-    """결제 서비스 (Provider → Calculator → Formatter 조율)"""
+    """결제 서비스 (Repository → Calculator → Formatter 조율)"""
 
     def __init__(self, db: AsyncSession):
         super().__init__()
         self.db = db
-        self.provider = PaymentDataProvider(db)
+        self.repository = PaymentDataRepository(db)
         self.calculator = PaymentCalculator()
         self.formatter = PaymentResponseFormatter()
 
@@ -302,7 +302,7 @@ class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
         흐름:
         1. validate_request: 요청 검증
         2. check_permissions: 권한 확인 (옵션)
-        3. Provider: 사용자 정보, 결제 수단 조회
+        3. Repository: 사용자 정보, 결제 수단 조회
         4. Calculator: 수수료 계산, 한도 검증
         5. Formatter: 응답 데이터 포맷팅
         """
@@ -310,8 +310,8 @@ class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
             # 1. 요청 검증
             await self.validate_request(request)
 
-            # 2. 데이터 조회 (Provider)
-            user_data = await self.provider.provide({
+            # 2. 데이터 조회 (Repository)
+            user_data = await self.repository.provide({
                 "user_id": request.user_id,
                 "payment_method_id": request.payment_method_id
             })
@@ -353,15 +353,15 @@ class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
 **핵심 규칙**:
 - ✅ **반드시 클래스 기반**: 절차지향 함수 금지
 - ✅ **BaseService 상속**: Template Method 패턴 활용
-- ✅ **Provider/Calculator/Formatter 조합**: 직접 DB 접근 금지
+- ✅ **Repository/Calculator/Formatter 조합**: 직접 DB 접근 금지
 - ✅ **ServiceResult 반환**: 성공/실패를 명시적으로 표현
 - ❌ **복잡한 계산 로직 금지**: Calculator로 위임
 
 ---
 
-### 3. Provider Layer (Data Access)
+### 3. Repository Layer (Data Access)
 
-**위치**: `app/domain/{domain}/providers/{provider_name}.py`
+**위치**: `app/domain/{domain}/repositories/{repository_name}.py`
 
 **책임**:
 - 데이터베이스 쿼리 (SQLAlchemy ORM)
@@ -377,12 +377,12 @@ from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from server.app.shared.base import BaseProvider
+from server.app.shared.base import BaseRepository
 from server.app.domain.payment.models import PaymentMethod, User
 from server.app.shared.exceptions import NotFoundException
 
-class PaymentDataProvider(BaseProvider[Dict[str, Any], Dict[str, Any]]):
-    """결제 데이터 조회 Provider"""
+class PaymentDataRepository(BaseRepository[Dict[str, Any], Dict[str, Any]]):
+    """결제 데이터 조회 Repository"""
 
     def __init__(self, db: AsyncSession):
         super().__init__()
@@ -433,7 +433,7 @@ class PaymentDataProvider(BaseProvider[Dict[str, Any], Dict[str, Any]]):
 
 **핵심 규칙**:
 - ✅ **데이터 조회만 담당**: 계산 로직 금지
-- ✅ **BaseProvider 상속**: 타입 힌트 명시
+- ✅ **BaseRepository 상속**: 타입 힌트 명시
 - ✅ **명시적 예외 처리**: NotFoundException, ExternalServiceException 사용
 - ❌ **비즈니스 로직 금지**: "수수료 계산", "한도 검증" 등은 Calculator로
 
@@ -495,7 +495,7 @@ class PaymentCalculator(BaseCalculator[Dict[str, Any], Dict[str, Any]]):
             daily_limit = self._get_daily_limit(user.membership_tier)
 
             # 3. 한도 초과 여부 계산
-            # NOTE: 실제 사용 금액은 Provider에서 조회하지 않고,
+            # NOTE: 실제 사용 금액은 Repository에서 조회하지 않고,
             #       여기서는 단순히 요청 금액과 한도만 비교
             exceeds_limit = final_amount > daily_limit
 
@@ -1031,7 +1031,7 @@ async def process_payment(...):
 ### 1단계: 디렉토리 생성
 
 ```bash
-mkdir -p server/app/domain/user_management/{models,schemas,providers,calculators,formatters}
+mkdir -p server/app/domain/user_management/{models,schemas,repositories,calculators,formatters}
 touch server/app/domain/user_management/__init__.py
 touch server/app/domain/user_management/service.py
 ```
@@ -1074,14 +1074,14 @@ class UserResponse(BaseModel):
     created_at: str
 ```
 
-### 4단계: Provider 구현
+### 4단계: Repository 구현
 
-**파일**: `server/app/domain/user_management/providers/__init__.py`
+**파일**: `server/app/domain/user_management/repositories/__init__.py`
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
-from server.app.shared.base import BaseProvider
-# ... (Provider 코드)
+from server.app.shared.base import BaseRepository
+# ... (Repository 코드)
 ```
 
 ### 5단계: Calculator 구현 (필요 시)

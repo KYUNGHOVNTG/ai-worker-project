@@ -13,7 +13,7 @@
 ## 핵심 요약
 
 **프로젝트**: FastAPI + React 풀스택 웹 서비스 템플릿
-**아키텍처**: Router → Service → Provider/Calculator/Formatter (계층화)
+**아키텍처**: Router → Service → Repository/Calculator/Formatter (계층화)
 **기술 스택**: Python 3.12, FastAPI, SQLAlchemy 2.0 (async), React 19, TypeScript, Tailwind 4
 **DB**: PostgreSQL (asyncpg), Supabase 지원
 **핵심 철학**: 도메인 플러그인 구조 (기능 독립 추가), 타입 안전성, 비동기 처리
@@ -84,7 +84,7 @@ vibe-web-starter/
 │       ├── 📁 shared/            # 공유 컴포넌트
 │       │   ├── 📁 base/          # 추상 베이스 클래스
 │       │   │   ├── service.py    # BaseService
-│       │   │   ├── provider.py   # BaseProvider
+│       │   │   ├── repository.py   # BaseRepository
 │       │   │   ├── calculator.py # BaseCalculator
 │       │   │   └── formatter.py  # BaseFormatter
 │       │   ├── 📁 exceptions/    # 커스텀 예외
@@ -139,7 +139,7 @@ HTTP Request
     ┌────────┼────────┐
     ↓        ↓        ↓
 ┌────────┐┌──────┐┌─────────┐
-│Provider││Calculator││Formatter│
+│Repository││Calculator││Formatter│
 │(데이터)││(계산)││(포맷팅)│
 └────────┘└──────┘└─────────┘
 ```
@@ -149,8 +149,8 @@ HTTP Request
 | 계층 | 책임 | 예시 |
 |------|------|------|
 | **Router** | HTTP 요청/응답, 입력 검증 | `@router.post("/analyze")` |
-| **Service** | 비즈니스 흐름 제어, 트랜잭션 관리 | Provider → Calculator → Formatter 조율 |
-| **Provider** | 데이터 조회 (DB, API, 캐시) | DB에서 사용자 정보 조회 |
+| **Service** | 비즈니스 흐름 제어, 트랜잭션 관리 | Repository → Calculator → Formatter 조율 |
+| **Repository** | 데이터 조회 (DB, API, 캐시) | DB에서 사용자 정보 조회 |
 | **Calculator** | 순수 계산 로직 (부수 효과 없음) | 통계 분석, 점수 계산 |
 | **Formatter** | 내부 데이터 → API 응답 변환 | ORM 모델 → JSON 응답 |
 
@@ -162,7 +162,7 @@ HTTP Request
 server/app/domain/[도메인명]/
 ├── models/          # SQLAlchemy ORM 모델
 ├── schemas/         # Pydantic 요청/응답 스키마
-├── providers/       # 데이터 조회 로직
+├── repositories/       # 데이터 조회 로직
 ├── calculators/     # 비즈니스 계산 로직
 ├── formatters/      # 응답 포맷팅
 └── service.py       # 도메인 서비스 (전체 조율)
@@ -251,7 +251,7 @@ DELETE /api/v1/sample/data/{id} → 데이터 삭제
 #### 1단계: 폴더 구조 생성
 
 ```bash
-mkdir -p server/app/domain/payment/{models,schemas,providers,calculators,formatters}
+mkdir -p server/app/domain/payment/{models,schemas,repositories,calculators,formatters}
 touch server/app/domain/payment/__init__.py
 touch server/app/domain/payment/service.py
 ```
@@ -290,14 +290,14 @@ class PaymentResponse(BaseModel):
     status: str
 ```
 
-#### 4단계: Provider 구현
+#### 4단계: Repository 구현
 
-**파일**: `server/app/domain/payment/providers/__init__.py`
+**파일**: `server/app/domain/payment/repositories/__init__.py`
 
 ```python
-from server.app.shared.base import BaseProvider
+from server.app.shared.base import BaseRepository
 
-class PaymentDataProvider(BaseProvider):
+class PaymentDataRepository(BaseRepository):
     """결제 데이터 조회"""
 
     async def provide(self, payment_id: int):
@@ -348,7 +348,7 @@ class PaymentFormatter(BaseFormatter):
 
 ```python
 from server.app.shared.base import BaseService
-from .providers import PaymentDataProvider
+from .repositories import PaymentDataRepository
 from .calculators import PaymentCalculator
 from .formatters import PaymentFormatter
 
@@ -356,9 +356,9 @@ class PaymentService(BaseService):
     """결제 도메인 서비스"""
 
     async def execute(self, request: PaymentRequest):
-        # 1. 데이터 조회 (Provider)
-        provider = PaymentDataProvider(self.db)
-        data = await provider.provide(request.id)
+        # 1. 데이터 조회 (Repository)
+        repository = PaymentDataRepository(self.db)
+        data = await repository.provide(request.id)
 
         # 2. 계산 로직 (Calculator)
         calculator = PaymentCalculator()
@@ -514,7 +514,7 @@ export const PaymentPage: React.FC = () => {
 | FastAPI 의존성 주입 | `/server/app/core/dependencies.py` |
 | Request ID 미들웨어 | `/server/app/core/middleware.py` |
 | BaseService | `/server/app/shared/base/service.py` |
-| BaseProvider | `/server/app/shared/base/provider.py` |
+| BaseRepository | `/server/app/shared/base/repository.py` |
 | BaseCalculator | `/server/app/shared/base/calculator.py` |
 | BaseFormatter | `/server/app/shared/base/formatter.py` |
 | 커스텀 예외 | `/server/app/shared/exceptions/__init__.py` |
@@ -686,7 +686,7 @@ LOG_LEVEL=DEBUG
 - [ ] 백엔드: 도메인 폴더 구조 생성
 - [ ] 백엔드: ORM 모델 정의
 - [ ] 백엔드: Pydantic 스키마 정의
-- [ ] 백엔드: Provider 구현 (데이터 조회)
+- [ ] 백엔드: Repository 구현 (데이터 조회)
 - [ ] 백엔드: Calculator 구현 (비즈니스 로직)
 - [ ] 백엔드: Formatter 구현 (응답 포맷팅)
 - [ ] 백엔드: Service 구현 (전체 조율)
@@ -711,7 +711,7 @@ LOG_LEVEL=DEBUG
 > 이 프로젝트는 **FastAPI + React**로 구성된 풀스택 웹 서비스 템플릿입니다.
 >
 > **핵심 특징**:
-> 1. **계층화된 아키텍처**: Router → Service → Provider/Calculator/Formatter
+> 1. **계층화된 아키텍처**: Router → Service → Repository/Calculator/Formatter
 > 2. **도메인 플러그인 구조**: 각 기능을 독립적인 모듈로 추가 가능
 > 3. **타입 안전성**: Pydantic (백엔드) + TypeScript (프론트엔드)
 > 4. **비동기 최적화**: async/await를 통한 성능 최적화

@@ -1,7 +1,7 @@
 """
-BaseProvider: 데이터 제공자 추상 클래스
+BaseRepository: 데이터 접근 계층 추상 클래스
 
-Strategy Pattern의 Context 역할을 수행합니다.
+Repository Pattern을 구현합니다.
 외부 데이터 소스(DB, API, 파일 등)로부터 데이터를 가져오는 책임을 가집니다.
 """
 
@@ -10,18 +10,18 @@ from typing import Generic, TypeVar, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.app.shared.types import ProviderInput, ProviderOutput
+from server.app.shared.types import RepositoryInput, RepositoryOutput
 
 # 제네릭 타입 변수
-TInput = TypeVar("TInput", bound=ProviderInput)
-TOutput = TypeVar("TOutput", bound=ProviderOutput)
+TInput = TypeVar("TInput", bound=RepositoryInput)
+TOutput = TypeVar("TOutput", bound=RepositoryOutput)
 
 
-class BaseProvider(ABC, Generic[TInput, TOutput]):
+class BaseRepository(ABC, Generic[TInput, TOutput]):
     """
-    Provider 추상 베이스 클래스
+    Repository 추상 베이스 클래스
 
-    모든 Provider는 이 클래스를 상속받아 구현해야 합니다.
+    모든 Repository는 이 클래스를 상속받아 구현해야 합니다.
 
     책임:
         - 외부 데이터 소스로부터 데이터를 가져옴
@@ -31,11 +31,11 @@ class BaseProvider(ABC, Generic[TInput, TOutput]):
         - 캐시 조회
 
     사용 예시:
-        class UserDataProvider(BaseProvider[UserProviderInput, UserProviderOutput]):
-            async def provide(self, input_data: UserProviderInput) -> UserProviderOutput:
+        class UserDataRepository(BaseRepository[UserRepositoryInput, UserRepositoryOutput]):
+            async def provide(self, input_data: UserRepositoryInput) -> UserRepositoryOutput:
                 # 데이터베이스에서 사용자 정보 조회
                 user = await self.db.execute(...)
-                return UserProviderOutput(user=user)
+                return UserRepositoryOutput(user=user)
     """
 
     def __init__(self, db: AsyncSession):
@@ -62,7 +62,7 @@ class BaseProvider(ABC, Generic[TInput, TOutput]):
             TOutput: Provider 출력 데이터
 
         Raises:
-            ProviderException: 데이터 제공 중 오류 발생 시
+            RepositoryException: 데이터 제공 중 오류 발생 시
 
         TODO: 구현 시 다음 사항을 고려하세요
             - 데이터베이스 쿼리 최적화 (N+1 문제, eager loading)
@@ -94,7 +94,7 @@ class BaseProvider(ABC, Generic[TInput, TOutput]):
 
     async def prepare(self) -> None:
         """
-        Provider 사용 전 준비 작업을 수행합니다.
+        Repository 사용 전 준비 작업을 수행합니다.
 
         연결 설정, 캐시 워밍업 등의 작업을 수행할 수 있습니다.
         기본 구현은 아무것도 하지 않습니다.
@@ -108,7 +108,7 @@ class BaseProvider(ABC, Generic[TInput, TOutput]):
 
     async def cleanup(self) -> None:
         """
-        Provider 사용 후 정리 작업을 수행합니다.
+        Repository 사용 후 정리 작업을 수행합니다.
 
         리소스 해제, 연결 종료 등의 작업을 수행할 수 있습니다.
         기본 구현은 아무것도 하지 않습니다.
@@ -121,11 +121,11 @@ class BaseProvider(ABC, Generic[TInput, TOutput]):
         pass
 
 
-class DatabaseProvider(BaseProvider[TInput, TOutput], ABC):
+class DatabaseRepository(BaseRepository[TInput, TOutput], ABC):
     """
-    데이터베이스 Provider 베이스 클래스
+    데이터베이스 Repository 베이스 클래스
 
-    데이터베이스 특화 Provider를 위한 추가 유틸리티를 제공합니다.
+    데이터베이스 특화 Repository를 위한 추가 유틸리티를 제공합니다.
     """
 
     async def execute_query(self, query: Any) -> Any:
@@ -145,9 +145,9 @@ class DatabaseProvider(BaseProvider[TInput, TOutput], ABC):
         raise NotImplementedError("Subclass must implement 'execute_query' method")
 
 
-class APIProvider(BaseProvider[TInput, TOutput], ABC):
+class APIRepository(BaseRepository[TInput, TOutput], ABC):
     """
-    외부 API Provider 베이스 클래스
+    외부 API Repository 베이스 클래스
 
     외부 API 호출을 위한 추가 유틸리티를 제공합니다.
     """

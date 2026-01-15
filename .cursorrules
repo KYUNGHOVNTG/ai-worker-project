@@ -9,7 +9,7 @@ Cursor나 Claude AI 에이전트와 협업할 때 다음 규칙을 **엄격히**
 
 1. **폴더 구조 파괴 금지**: 기존의 계층화된 폴더 구조(`core/`, `shared/`, `domain/`, `domains/`)를 절대 변경하지 마세요
 2. **절차지향 함수 금지**: 백엔드 비즈니스 로직은 반드시 클래스 기반으로 작성
-3. **직접 DB 접근 금지**: Service 레이어에서 직접 DB 쿼리 작성 금지 (Provider로 위임)
+3. **직접 DB 접근 금지**: Service 레이어에서 직접 DB 쿼리 작성 금지 (Repository로 위임)
 4. **직접 axios 호출 금지**: 프론트엔드에서 `axios`를 직접 import 금지 (apiClient 사용)
 5. **도메인 간 의존성 금지**: 한 도메인이 다른 도메인의 내부 구현에 의존하지 않도록
 6. **인라인 스타일 금지**: React 컴포넌트에서 `style={{ ... }}` 사용 금지 (Tailwind CSS 사용)
@@ -22,7 +22,7 @@ Cursor나 Claude AI 에이전트와 협업할 때 다음 규칙을 **엄격히**
 ### 아키텍처 우선
 
 - **변경 전 확인**: 코드를 수정하기 전 항상 변경 사항이 아키텍처에 미치는 영향을 설명하고 사용자의 확인을 받으세요
-- **레이어드 아키텍처 준수**: Router → Service → Provider/Calculator/Formatter 흐름을 절대 위반하지 마세요
+- **레이어드 아키텍처 준수**: Router → Service → Repository/Calculator/Formatter 흐름을 절대 위반하지 마세요
 - **단일 책임 원칙**: 각 클래스/컴포넌트는 하나의 역할만 담당해야 합니다
 
 ### 타입 안전성
@@ -30,7 +30,7 @@ Cursor나 Claude AI 에이전트와 협업할 때 다음 규칙을 **엄격히**
 - **Python**: 모든 함수/메서드에 타입 힌트 명시 (`def foo(x: int) -> str:`)
 - **TypeScript**: `any` 타입 사용 금지 (불가피한 경우 `unknown` 사용 후 타입 가드)
 - **Pydantic**: Request/Response DTO는 반드시 Pydantic BaseModel 상속
-- **Generic Types**: BaseService, BaseProvider 등은 제네릭 타입 파라미터 명시
+- **Generic Types**: BaseService, BaseRepository 등은 제네릭 타입 파라미터 명시
 
 ---
 
@@ -49,12 +49,12 @@ async def process_payment(db: AsyncSession, request: PaymentRequest):
 class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.provider = PaymentDataProvider(db)
+        self.repository = PaymentDataRepository(db)
         self.calculator = PaymentCalculator()
         self.formatter = PaymentResponseFormatter()
 
     async def execute(self, request: PaymentRequest) -> ServiceResult[PaymentResponse]:
-        # Provider → Calculator → Formatter 흐름
+        # Repository → Calculator → Formatter 흐름
         ...
 ```
 
@@ -97,8 +97,8 @@ raise NotFoundException(
 ### 4. 레이어별 책임
 
 - **Router**: HTTP 요청/응답만 처리, 비즈니스 로직 금지
-- **Service**: Provider/Calculator/Formatter 조율, 트랜잭션 관리
-- **Provider**: 데이터 조회 (DB, API, 파일), Side Effect 허용
+- **Service**: Repository/Calculator/Formatter 조율, 트랜잭션 관리
+- **Repository**: 데이터 조회 (DB, API, 파일), Side Effect 허용
 - **Calculator**: 순수 계산 로직, Side Effect 절대 금지 (DB 접근 불가)
 - **Formatter**: 내부 데이터 → API 응답 변환
 
@@ -129,7 +129,7 @@ server/app/domain/{domain_name}/
 │   └── __init__.py
 ├── schemas/                # Pydantic 스키마
 │   └── __init__.py
-├── providers/              # 데이터 조회
+├── repositories/              # 데이터 조회
 │   └── __init__.py
 ├── calculators/            # 비즈니스 로직
 │   └── __init__.py
@@ -355,7 +355,7 @@ class UserService(BaseService[UserRequest, UserResponse]):
         """
         super().__init__()
         self.db = db
-        self.provider = UserDataProvider(db)
+        self.repository = UserDataRepository(db)
 
     async def execute(self, request: UserRequest) -> ServiceResult[UserResponse]:
         """
@@ -374,10 +374,10 @@ class UserService(BaseService[UserRequest, UserResponse]):
         # 구현...
 
 # 3. 명명 규칙
-- 클래스: PascalCase (UserService, PaymentProvider)
+- 클래스: PascalCase (UserService, PaymentRepository)
 - 함수/메서드: snake_case (get_user, process_payment)
 - 상수: UPPER_SNAKE_CASE (MAX_RETRY_COUNT)
-- 파일명: snake_case (user_service.py, payment_provider.py)
+- 파일명: snake_case (user_service.py, payment_repository.py)
 ```
 
 ### TypeScript (Frontend)

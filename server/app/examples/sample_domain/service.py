@@ -2,7 +2,7 @@
 Sample Domain Service
 
 비즈니스 로직을 조율하는 서비스 계층입니다.
-Provider, Calculator, Formatter를 사용하여 전체 흐름을 제어합니다.
+Repository, Calculator, Formatter를 사용하여 전체 흐름을 제어합니다.
 """
 
 from typing import Optional
@@ -15,17 +15,17 @@ from server.app.shared.exceptions import ValidationException, NotFoundException
 from server.app.examples.sample_domain.schemas import (
     SampleAnalysisRequest,
     SampleAnalysisResponse,
-    SampleProviderInput,
+    SampleRepositoryInput,
     SampleCalculatorInput,
     SampleFormatterInput,
-    SimpleProviderInput,
+    SimpleRepositoryInput,
     SimpleCalculatorInput,
     SimpleFormatterInput,
     SampleListResponse,
 )
-from server.app.examples.sample_domain.providers import (
-    SampleDataProvider,
-    SimpleMockDataProvider,
+from server.app.examples.sample_domain.repositories import (
+    SampleDataRepository,
+    SimpleMockDataRepository,
 )
 from server.app.examples.sample_domain.calculators import (
     SampleAnalysisCalculator,
@@ -42,7 +42,7 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
     샘플 도메인 서비스
 
     분석 요청을 받아서 다음 단계를 수행합니다:
-        1. 데이터 조회 (Provider)
+        1. 데이터 조회 (Repository)
         2. 분석 수행 (Calculator)
         3. 응답 포맷팅 (Formatter)
 
@@ -66,8 +66,8 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
         """
         super().__init__(db)
 
-        # 의존성 주입: Provider, Calculator, Formatter 인스턴스 생성
-        self.data_provider = SampleDataProvider(db)
+        # 의존성 주입: Repository, Calculator, Formatter 인스턴스 생성
+        self.data_repository = SampleDataRepository(db)
         self.analysis_calculator = SampleAnalysisCalculator()
         self.response_formatter = SampleResponseFormatter()
 
@@ -101,7 +101,7 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
             # 2. 권한 확인 (필요 시)
             await self.check_permissions(request, user_id=user_id)
 
-            # 3. 데이터 조회 (Provider)
+            # 3. 데이터 조회 (Repository)
             data = await self._fetch_data(request)
 
             # 4. 분석 수행 (Calculator)
@@ -133,7 +133,7 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
 
     async def _fetch_data(self, request: SampleAnalysisRequest) -> dict:
         """
-        데이터를 조회합니다 (Provider 사용).
+        데이터를 조회합니다 (Repository 사용).
 
         Args:
             request: 분석 요청
@@ -152,7 +152,7 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
         )
 
         # Provider 호출
-        provider_output = await self.data_provider.provide(provider_input)
+        provider_output = await self.data_repository.provide(provider_input)
 
         # dict로 변환 (Calculator에 전달하기 위해)
         return {

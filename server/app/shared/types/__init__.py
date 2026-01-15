@@ -96,24 +96,29 @@ class PaginatedResult(BaseModel, Generic[T]):
 # ====================
 
 
-class ProviderInput(BaseModel):
+class RepositoryInput(BaseModel):
     """
-    Provider 입력 데이터 베이스
+    Repository 입력 데이터 베이스
 
-    모든 Provider 입력은 이 클래스를 상속받아야 합니다.
+    모든 Repository 입력은 이 클래스를 상속받아야 합니다.
+    """
+
+    pass
+
+
+class RepositoryOutput(BaseModel):
+    """
+    Repository 출력 데이터 베이스
+
+    모든 Repository 출력은 이 클래스를 상속받아야 합니다.
     """
 
     pass
 
 
-class ProviderOutput(BaseModel):
-    """
-    Provider 출력 데이터 베이스
-
-    모든 Provider 출력은 이 클래스를 상속받아야 합니다.
-    """
-
-    pass
+# 하위 호환성을 위한 별칭 (deprecated)
+ProviderInput = RepositoryInput
+ProviderOutput = RepositoryOutput
 
 
 class CalculatorInput(BaseModel):

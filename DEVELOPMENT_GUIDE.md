@@ -229,14 +229,14 @@ class PaymentService(BaseService):
         user = await user_service.get_user(request.user_id)  # 직접 호출
         ...
 
-# ✅ 좋은 예: Provider를 통해 데이터 조회
+# ✅ 좋은 예: Repository를 통해 데이터 조회
 class PaymentService(BaseService):
     def __init__(self, db):
         self.db = db
-        self.user_provider = UserDataProvider(db)  # 데이터 조회만
+        self.user_repository = UserDataRepository(db)  # 데이터 조회만
 
     async def execute(self, request):
-        user = await self.user_provider.get_user(request.user_id)
+        user = await self.user_repository.get_user(request.user_id)
         ...
 ```
 
@@ -274,7 +274,7 @@ class PaymentService:
 server/app/shared/
 ├── base/               # 추상 베이스 클래스
 │   ├── service.py      # BaseService
-│   ├── provider.py     # BaseProvider
+│   ├── repository.py     # BaseRepository
 │   ├── calculator.py   # BaseCalculator
 │   └── formatter.py    # BaseFormatter
 ├── exceptions/         # 커스텀 예외
@@ -335,12 +335,12 @@ client/src/core/
 #### 단계 1: 디렉토리 생성
 
 ```bash
-mkdir -p server/app/domain/payment/{models,schemas,providers,calculators,formatters}
+mkdir -p server/app/domain/payment/{models,schemas,repositories,calculators,formatters}
 touch server/app/domain/payment/__init__.py
 touch server/app/domain/payment/service.py
 touch server/app/domain/payment/models/__init__.py
 touch server/app/domain/payment/schemas/__init__.py
-touch server/app/domain/payment/providers/__init__.py
+touch server/app/domain/payment/repositories/__init__.py
 touch server/app/domain/payment/calculators/__init__.py
 touch server/app/domain/payment/formatters/__init__.py
 ```
@@ -437,21 +437,21 @@ class PaymentResponse(BaseModel):
 - [ ] **2.5 Response 스키마 정의 완료**
 - [ ] **2.6 Field 검증 규칙 추가 완료**
 
-#### 단계 4: Provider 구현
+#### 단계 4: Repository 구현
 
-**파일**: `server/app/domain/payment/providers/__init__.py`
+**파일**: `server/app/domain/payment/repositories/__init__.py`
 
 ```python
 from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from server.app.shared.base import BaseProvider
+from server.app.shared.base import BaseRepository
 from server.app.domain.payment.models import Payment, PaymentMethod
 from server.app.shared.exceptions import NotFoundException
 
-class PaymentDataProvider(BaseProvider[Dict[str, Any], Dict[str, Any]]):
-    """결제 데이터 조회 Provider"""
+class PaymentDataRepository(BaseRepository[Dict[str, Any], Dict[str, Any]]):
+    """결제 데이터 조회 Repository"""
 
     def __init__(self, db: AsyncSession):
         super().__init__()
@@ -462,7 +462,7 @@ class PaymentDataProvider(BaseProvider[Dict[str, Any], Dict[str, Any]]):
         # 구현...
 ```
 
-- [ ] **2.7 Provider 클래스 생성 완료**
+- [ ] **2.7 Repository 클래스 생성 완료**
 - [ ] **2.8 DB 쿼리 로직 구현 완료**
 - [ ] **2.9 예외 처리 추가 완료**
 
@@ -520,7 +520,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from server.app.shared.base import BaseService
 from server.app.shared.types import ServiceResult
 from server.app.domain.payment.schemas import PaymentRequest, PaymentResponse
-from server.app.domain.payment.providers import PaymentDataProvider
+from server.app.domain.payment.repositories import PaymentDataRepository
 from server.app.domain.payment.calculators import PaymentCalculator
 from server.app.domain.payment.formatters import PaymentResponseFormatter
 
@@ -530,18 +530,18 @@ class PaymentService(BaseService[PaymentRequest, PaymentResponse]):
     def __init__(self, db: AsyncSession):
         super().__init__()
         self.db = db
-        self.provider = PaymentDataProvider(db)
+        self.repository = PaymentDataRepository(db)
         self.calculator = PaymentCalculator()
         self.formatter = PaymentResponseFormatter()
 
     async def execute(self, request: PaymentRequest) -> ServiceResult[PaymentResponse]:
         """결제 처리 메인 로직"""
-        # Provider → Calculator → Formatter 흐름
+        # Repository → Calculator → Formatter 흐름
         # 구현...
 ```
 
 - [ ] **2.15 Service 클래스 생성 완료**
-- [ ] **2.16 Provider/Calculator/Formatter 조율 로직 구현 완료**
+- [ ] **2.16 Repository/Calculator/Formatter 조율 로직 구현 완료**
 - [ ] **2.17 트랜잭션 관리 추가 완료**
 - [ ] **2.18 에러 핸들링 추가 완료**
 
@@ -859,7 +859,7 @@ function App() {
 
 #### 아키텍처
 - [ ] 계층화된 폴더 구조 유지
-- [ ] 레이어별 책임 분리 준수 (Router/Service/Provider/Calculator/Formatter)
+- [ ] 레이어별 책임 분리 준수 (Router/Service/Repository/Calculator/Formatter)
 - [ ] 도메인 간 의존성 최소화
 - [ ] 공통 로직은 `shared/` 또는 `core/`로 추출
 

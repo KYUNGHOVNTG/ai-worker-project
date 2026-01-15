@@ -177,17 +177,22 @@ class SampleAnalysisResponse(BaseModel):
 # ====================
 
 
-class SampleProviderInput(BaseModel):
-    """Provider 입력 데이터"""
+class SampleRepositoryInput(BaseModel):
+    """Repository 입력 데이터"""
     data_id: int
 
 
-class SampleProviderOutput(BaseModel):
-    """Provider 출력 데이터"""
+class SampleRepositoryOutput(BaseModel):
+    """Repository 출력 데이터"""
     id: int
     name: str
     value: float
     score: Optional[float] = None
+
+
+# 하위 호환성을 위한 별칭 (deprecated)
+SampleProviderInput = SampleRepositoryInput
+SampleProviderOutput = SampleRepositoryOutput
 
 
 class SampleCalculatorInput(BaseModel):
@@ -279,17 +284,22 @@ class SampleListResponse(BaseModel):
     )
 
 
-# Provider → Calculator → Formatter용 DTOs
+# Repository → Calculator → Formatter용 DTOs
 
-class SimpleProviderInput(BaseModel):
-    """Simple Provider 입력"""
+class SimpleRepositoryInput(BaseModel):
+    """Simple Repository 입력"""
     # GET 요청이므로 입력 없음 (또는 query params)
     pass
 
 
-class SimpleProviderOutput(BaseModel):
-    """Simple Provider 출력 - 원본 데이터"""
+class SimpleRepositoryOutput(BaseModel):
+    """Simple Repository 출력 - 원본 데이터"""
     items: list[dict]  # Mock 데이터
+
+
+# 하위 호환성을 위한 별칭 (deprecated)
+SimpleProviderInput = SimpleRepositoryInput
+SimpleProviderOutput = SimpleRepositoryOutput
 
 
 class SimpleCalculatorInput(BaseModel):

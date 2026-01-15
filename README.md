@@ -39,7 +39,7 @@
 
 ### 1. **유지보수성 최우선**
 - 모든 비즈니스 로직은 **클래스 기반**으로 작성 (절차지향 함수 금지)
-- 명확한 **계층화된 폴더 구조** (Router-Service-Provider-Calculator-Formatter)
+- 명확한 **계층화된 폴더 구조** (Router-Service-Repository-Calculator-Formatter)
 - **단일 책임 원칙(SRP)** 준수: 각 클래스는 하나의 역할만 담당
 
 ### 2. **모듈화 & 도메인 독립성**
@@ -54,7 +54,7 @@
 
 ### 4. **테스트 가능성**
 - 의존성 주입(Dependency Injection) 패턴으로 Mock 가능
-- 순수 함수(Calculator) / Side Effect 함수(Provider) 명확히 분리
+- 순수 함수(Calculator) / Side Effect 함수(Repository) 명확히 분리
 - Unit/Integration 테스트 작성 가능한 구조
 
 ---
@@ -119,7 +119,7 @@ ai-worker-project/
 │       ├── 📁 shared/                  # 공유 컴포넌트
 │       │   ├── 📁 base/                # 추상 베이스 클래스
 │       │   │   ├── service.py          # BaseService (Facade + Template Method)
-│       │   │   ├── provider.py         # BaseProvider (Data Access)
+│       │   │   ├── repository.py         # BaseRepository (Data Access)
 │       │   │   ├── calculator.py       # BaseCalculator (Pure Logic)
 │       │   │   └── formatter.py        # BaseFormatter (Presentation)
 │       │   ├── 📁 exceptions/          # 커스텀 예외 계층구조
@@ -130,7 +130,7 @@ ai-worker-project/
 │       │       ├── service.py          # SampleDomainService
 │       │       ├── models/             # SQLAlchemy 모델
 │       │       ├── schemas/            # Pydantic 스키마 (Request/Response)
-│       │       ├── providers/          # 데이터 조회 (SampleDataProvider)
+│       │       ├── repositories/          # 데이터 조회 (SampleDataRepository)
 │       │       ├── calculators/        # 비즈니스 로직 (SampleAnalysisCalculator)
 │       │       └── formatters/         # 응답 포맷팅 (SampleResponseFormatter)
 │       └── 📁 api/
@@ -197,14 +197,14 @@ ai-worker-project/
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  🎯 Service Layer (Facade + Template Method Pattern)           │
-│  • 비즈니스 로직 조율 (Provider → Calculator → Formatter)        │
+│  • 비즈니스 로직 조율 (Repository → Calculator → Formatter)        │
 │  • 트랜잭션 관리 & 권한 검증                                     │
 │  • before_execute() / after_execute() 훅 제공                   │
 └───────────┬──────────────────────┬──────────────────────────────┘
             │                      │
             ▼                      ▼
 ┌───────────────────┐    ┌──────────────────────┐    ┌────────────────────┐
-│  📦 Provider      │    │  🧮 Calculator       │    │  📝 Formatter      │
+│  📦 Repository      │    │  🧮 Calculator       │    │  📝 Formatter      │
 │  (Data Layer)     │    │  (Business Logic)    │    │  (Presentation)    │
 │                   │    │                      │    │                    │
 │  • DB 쿼리        │    │  • 순수 함수         │    │  • API 응답 포맷   │
@@ -219,8 +219,8 @@ ai-worker-project/
 | 계층 | 클래스 예시 | 책임 | 패턴 |
 |------|------------|------|------|
 | **Router** | `sample.py` | HTTP 요청 수신, 입력 검증, Service 호출, HTTP 응답 반환 | FastAPI Route Decorator |
-| **Service** | `BaseService[TRequest, TResponse]` | Provider/Calculator/Formatter 조율, 트랜잭션 관리, 에러 핸들링 | Facade, Template Method |
-| **Provider** | `BaseProvider[TInput, TOutput]` | 데이터 조회 (DB/API/Cache), Side Effect 허용 | Strategy, Dependency Injection |
+| **Service** | `BaseService[TRequest, TResponse]` | Repository/Calculator/Formatter 조율, 트랜잭션 관리, 에러 핸들링 | Facade, Template Method |
+| **Repository** | `BaseRepository[TInput, TOutput]` | 데이터 조회 (DB/API/Cache), Side Effect 허용 | Strategy, Dependency Injection |
 | **Calculator** | `BaseCalculator[TInput, TOutput]` | 순수 계산 로직, Side Effect 금지, 테스트 가능 | Pure Functions |
 | **Formatter** | `BaseFormatter[TInput, TOutput]` | 내부 데이터 → API 응답 변환, 직렬화 | Adapter |
 
@@ -236,8 +236,8 @@ async def analyze_data(request: SampleAnalysisRequest, db: AsyncSession = Depend
     result = await service.execute(request)
 
     # 3. Service 내부 흐름:
-    #    a) Provider: 데이터 조회
-    provider_output = await self.provider.provide(provider_input)
+    #    a) Repository: 데이터 조회
+    repository_output = await self.repository.provide(repository_input)
 
     #    b) Calculator: 비즈니스 로직 실행
     calc_output = await self.calculator.calculate(calc_input)
@@ -348,14 +348,14 @@ npm run dev
 
 ```bash
 # 1. 도메인 디렉토리 생성
-mkdir -p server/app/domain/payment/{models,schemas,providers,calculators,formatters}
+mkdir -p server/app/domain/payment/{models,schemas,repositories,calculators,formatters}
 
 # 2. 각 파일 생성 (__init__.py 포함)
 touch server/app/domain/payment/__init__.py
 touch server/app/domain/payment/service.py
 touch server/app/domain/payment/models/__init__.py
 touch server/app/domain/payment/schemas/__init__.py
-touch server/app/domain/payment/providers/__init__.py
+touch server/app/domain/payment/repositories/__init__.py
 touch server/app/domain/payment/calculators/__init__.py
 touch server/app/domain/payment/formatters/__init__.py
 
@@ -377,7 +377,7 @@ touch client/src/domains/payment/types.ts
 
 - [ ] **1단계**: `models/__init__.py` - SQLAlchemy 모델 정의
 - [ ] **2단계**: `schemas/__init__.py` - Pydantic Request/Response 스키마
-- [ ] **3단계**: `providers/__init__.py` - 데이터 조회 로직 (BaseProvider 상속)
+- [ ] **3단계**: `repositories/__init__.py` - 데이터 조회 로직 (BaseRepository 상속)
 - [ ] **4단계**: `calculators/__init__.py` - 비즈니스 로직 (BaseCalculator 상속)
 - [ ] **5단계**: `formatters/__init__.py` - 응답 포맷팅 (BaseFormatter 상속)
 - [ ] **6단계**: `service.py` - Service 클래스 (BaseService 상속)

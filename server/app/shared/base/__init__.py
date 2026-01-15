@@ -6,12 +6,16 @@ Base 클래스 모듈
 
 from server.app.shared.base.calculator import BaseCalculator
 from server.app.shared.base.formatter import BaseFormatter
-from server.app.shared.base.provider import BaseProvider
+from server.app.shared.base.repository import BaseRepository
 from server.app.shared.base.service import BaseService
+
+# 하위 호환성을 위한 별칭 (deprecated)
+BaseProvider = BaseRepository
 
 __all__ = [
     "BaseService",
-    "BaseProvider",
+    "BaseRepository",
     "BaseCalculator",
     "BaseFormatter",
+    "BaseProvider",  # deprecated, use BaseRepository instead
 ]
