@@ -7,7 +7,7 @@ examples/sample_domain/calculators의 구조를 참고하세요.
 
 from server.app.shared.base import BaseCalculator
 from server.app.shared.exceptions import CalculatorException
-from server.app.examples.sample_domain.schemas import (
+from server.app.domain.sample.schemas import (
     SampleCalculatorInput,
     SampleCalculatorOutput,
 )

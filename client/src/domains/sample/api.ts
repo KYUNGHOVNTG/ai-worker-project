@@ -8,57 +8,45 @@
  */
 
 import { apiClient } from '@/core/api';
-import type { ApiResponse, PaginatedResponse } from '@/core/api';
-import type { SampleItem, SampleFormData } from './types';
+import type { SampleItem, SampleCreateData, SampleUpdateData } from './types';
+
+const BASE = '/v1/sample';
 
 /**
- * Sample 아이템 목록 조회
+ * Sample 아이템 목록 조회 — GET /api/v1/sample/
  */
-export async function fetchSampleItems(
-  page: number = 1,
-  pageSize: number = 10
-): Promise<PaginatedResponse<SampleItem>> {
-  const response = await apiClient.get<ApiResponse<PaginatedResponse<SampleItem>>>(
-    '/samples',
-    { params: { page, pageSize } }
-  );
-
-  return response.data.data;
+export async function fetchSampleItems(): Promise<SampleItem[]> {
+  const response = await apiClient.get<SampleItem[]>(`${BASE}/`);
+  return response.data;
 }
 
 /**
- * Sample 아이템 단건 조회
+ * Sample 아이템 단건 조회 — GET /api/v1/sample/{id}
  */
-export async function fetchSampleItem(id: string): Promise<SampleItem> {
-  const response = await apiClient.get<ApiResponse<SampleItem>>(`/samples/${id}`);
-  return response.data.data;
+export async function fetchSampleItem(id: number): Promise<SampleItem> {
+  const response = await apiClient.get<SampleItem>(`${BASE}/${id}`);
+  return response.data;
 }
 
 /**
- * Sample 아이템 생성
+ * Sample 아이템 생성 — POST /api/v1/sample/
  */
-export async function createSampleItem(data: SampleFormData): Promise<SampleItem> {
-  const response = await apiClient.post<ApiResponse<SampleItem>>('/samples', data);
-  return response.data.data;
+export async function createSampleItem(data: SampleCreateData): Promise<SampleItem> {
+  const response = await apiClient.post<SampleItem>(`${BASE}/`, data);
+  return response.data;
 }
 
 /**
- * Sample 아이템 수정
+ * Sample 아이템 수정 — PUT /api/v1/sample/{id}
  */
-export async function updateSampleItem(
-  id: string,
-  data: Partial<SampleFormData>
-): Promise<SampleItem> {
-  const response = await apiClient.patch<ApiResponse<SampleItem>>(
-    `/samples/${id}`,
-    data
-  );
-  return response.data.data;
+export async function updateSampleItem(id: number, data: SampleUpdateData): Promise<SampleItem> {
+  const response = await apiClient.put<SampleItem>(`${BASE}/${id}`, data);
+  return response.data;
 }
 
 /**
- * Sample 아이템 삭제
+ * Sample 아이템 삭제 — DELETE /api/v1/sample/{id}
  */
-export async function deleteSampleItem(id: string): Promise<void> {
-  await apiClient.delete(`/samples/${id}`);
+export async function deleteSampleItem(id: number): Promise<void> {
+  await apiClient.delete(`${BASE}/${id}`);
 }

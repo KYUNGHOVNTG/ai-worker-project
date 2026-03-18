@@ -1,5 +1,5 @@
 /**
- * Card Component (Skeleton)
+ * Card Component
  *
  * 콘텐츠를 담는 카드 컴포넌트
  *
@@ -12,6 +12,7 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface CardProps {
   children: React.ReactNode;
@@ -19,19 +20,21 @@ interface CardProps {
 }
 
 export const Card: React.FC<CardProps> = ({ children, className = '' }) => {
-  // TODO: TailwindCSS 스타일 적용
-  // TODO: 그림자, 라운딩 등 디자인 적용
-
   return (
-    <div className={`card ${className}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className={`bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden ${className}`}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 };
 
 export const CardHeader: React.FC<CardProps> = ({ children, className = '' }) => {
   return (
-    <div className={`card-header ${className}`}>
+    <div className={`px-6 py-4 border-b border-slate-100 ${className}`}>
       {children}
     </div>
   );
@@ -39,7 +42,7 @@ export const CardHeader: React.FC<CardProps> = ({ children, className = '' }) =>
 
 export const CardBody: React.FC<CardProps> = ({ children, className = '' }) => {
   return (
-    <div className={`card-body ${className}`}>
+    <div className={`px-6 py-4 ${className}`}>
       {children}
     </div>
   );
@@ -47,7 +50,7 @@ export const CardBody: React.FC<CardProps> = ({ children, className = '' }) => {
 
 export const CardFooter: React.FC<CardProps> = ({ children, className = '' }) => {
   return (
-    <div className={`card-footer ${className}`}>
+    <div className={`px-6 py-4 border-t border-slate-100 bg-slate-50 ${className}`}>
       {children}
     </div>
   );

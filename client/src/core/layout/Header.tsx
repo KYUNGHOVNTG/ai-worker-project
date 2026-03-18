@@ -1,37 +1,22 @@
 /**
- * Header Component (Skeleton)
+ * Header Component
  *
  * 상단 네비게이션 헤더
- *
- * @example
- * <Header />
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Zap } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  // TODO: 로고 추가
-  // TODO: 네비게이션 메뉴
-  // TODO: 사용자 프로필 드롭다운
-  // TODO: 알림 아이콘
-  // TODO: 테마 토글 (다크모드)
-
   return (
-    <header className="header">
-      <div className="header-container">
-        <div className="header-logo">
-          {/* Logo */}
-          <h1>AI Dashboard</h1>
+    <header className="h-14 border-b border-slate-200 bg-white flex items-center px-6 shrink-0">
+      <Link to="/" className="flex items-center gap-2 font-bold text-slate-800 hover:text-indigo-600 transition-colors">
+        <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
+          <Zap className="text-white w-4 h-4" fill="currentColor" />
         </div>
-
-        <nav className="header-nav">
-          {/* Navigation Items */}
-        </nav>
-
-        <div className="header-actions">
-          {/* User Actions */}
-        </div>
-      </div>
+        Vibe Web Starter
+      </Link>
     </header>
   );
 };
