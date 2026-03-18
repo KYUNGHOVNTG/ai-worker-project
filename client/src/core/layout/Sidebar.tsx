@@ -1,35 +1,47 @@
 /**
- * Sidebar Component (Skeleton)
+ * Sidebar Component
  *
  * 사이드바 네비게이션
- *
- * @example
- * <Sidebar isOpen={isOpen} onClose={handleClose} />
  */
 
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { LayoutDashboard, Database } from 'lucide-react';
 
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose: _onClose }) => {
-  // TODO: 메뉴 아이템 리스트
-  // TODO: 활성 메뉴 하이라이트
-  // TODO: 접기/펼치기 기능
-  // TODO: 서브메뉴 지원
-  // TODO: 모바일에서 오버레이 사이드바
+const navItems = [
+  { to: '/', label: '홈', icon: LayoutDashboard, exact: true },
+  { to: '/sample', label: 'Sample CRUD', icon: Database, exact: false },
+];
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true }) => {
+  if (!isOpen) return null;
 
   return (
-    <aside className={`sidebar ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-      <nav className="sidebar-nav">
-        {/* Navigation Menu Items */}
-        <ul>
-          <li>Dashboard</li>
-          <li>Analytics</li>
-          <li>Settings</li>
-        </ul>
+    <aside className="w-56 border-r border-slate-200 bg-white shrink-0 flex flex-col">
+      <nav className="p-3 flex flex-col gap-1">
+        {navItems.map(({ to, label, icon: Icon, exact }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={exact}
+            className={({ isActive }) =>
+              [
+                'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800',
+              ].join(' ')
+            }
+          >
+            <Icon size={16} />
+            {label}
+          </NavLink>
+        ))}
       </nav>
     </aside>
   );
