@@ -41,32 +41,25 @@
 
 ---
 
-## Phase 의존 관계
+## 전체 Task 요약 및 실행 순서
 
 ```
-Phase 1 (첫 경험)
-├── Task 1-1 백엔드 sample 활성화   ← 선행 없음
-├── Task 1-2 프론트 sample 라우트   ← Task 1-1 완료 후
-├── Task 1-3 UI 컴포넌트 완성       ← 선행 없음 (Task 1-2와 병렬 가능)
-├── Task 1-4 Makefile + 셋업        ← 선행 없음 (독립)
-└── Task 1-5 SQLite 폴백 + 시드     ← Task 1-1 완료 후
-
-Phase 2 (제품 골격)                 ← Phase 1 전체 완료 후
-├── Task 2-1 Auth 백엔드            ← Phase 1 완료 후
-├── Task 2-2 Auth 프론트엔드        ← Task 2-1 완료 후
-├── Task 2-3 apiClient 토큰 주입    ← Task 2-1, 2-2 완료 후
-└── Task 2-4 에러 페이지            ← Phase 1 완료 후 (독립)
-
-Phase 3 (품질 보강)                 ← Phase 1 완료 후 (Phase 2와 병렬 가능)
-├── Task 3-1 통합 테스트            ← Phase 1 완료 후
-└── Task 3-2 단위 테스트            ← Phase 1 완료 후
+ 1  ✅ Task 1   백엔드 sample 활성화 + 마이그레이션   Sonnet 4.6
+ 2  ✅ Task 2   UI 컴포넌트 스타일 완성               Sonnet 4.6
+ 3     Task 3   Makefile + 원커맨드 셋업              Sonnet 4.6
+ 4     Task 4   프론트 sample 라우트 등록             Sonnet 4.6
+ 5     Task 5   SQLite 폴백 + 시드 스크립트           Sonnet 4.6
+ 6     Task 6   Auth 백엔드 (JWT 실제 구현)           Opus 4.6
+ 7     Task 7   에러 페이지 (404/500)                Sonnet 4.6
+ 8     Task 8   통합 테스트 (sample API)              Sonnet 4.6
+ 9     Task 9   단위 테스트 (Calculator/Formatter)    Sonnet 4.6
+10     Task 10  Auth 프론트엔드                      Sonnet 4.6
+11     Task 11  apiClient 토큰 자동 주입              Sonnet 4.6
 ```
 
 ---
 
-## Phase 1 — 첫 경험 (clone → 동작하는 데모)
-
-### Task 1-1: sample_domain 백엔드 활성화
+## ✅ Task 1: sample_domain 백엔드 활성화 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 기계적 이동/연결 작업. 구조가 명확하고 예시 코드가 이미 존재함.
@@ -104,41 +97,7 @@ Phase 3 (품질 보강)                 ← Phase 1 완료 후 (Phase 2와 병�
 
 ---
 
-### Task 1-2: sample_domain 프론트엔드 라우트 등록 및 동작 확인
-
-**추천 모델**: `claude-sonnet-4-6`
-> App.tsx 라우트 등록 + 기존 컴포넌트 연결. `client/src/domains/sample/` 구조가 이미 존재함.
-
-**작업 목표**
-`client/src/domains/sample/`의 기존 페이지·컴포넌트를 `App.tsx`에 등록하고, API 연결이 실제로 동작하도록 완성한다.
-
-**작업 범위**
-
-| 작업 | 파일 경로 |
-|------|-----------|
-| 수정 | `client/src/App.tsx` — `/sample` 라우트 추가, SamplePage import |
-| 수정/확인 | `client/src/domains/sample/api.ts` — `VITE_API_BASE_URL` 기반 실제 엔드포인트 연결 확인 |
-| 수정/확인 | `client/src/domains/sample/store.ts` — CRUD 액션 동작 확인 |
-| 수정/확인 | `client/src/domains/sample/pages/SamplePage.tsx` — 실제 렌더링 동작 확인 |
-| 수정/확인 | `client/src/domains/sample/components/SampleList.tsx` — 목록 표시 동작 확인 |
-| 수정/확인 | `client/src/domains/sample/components/SampleForm.tsx` — 생성/수정 폼 동작 확인 |
-| 수정 | `client/src/core/layout/Sidebar.tsx` — sample 메뉴 항목 추가 |
-
-**완료 기준**
-- 브라우저에서 `/sample` 접근 시 페이지 정상 렌더링
-- 목록 조회: API 호출 → 데이터 표시 (또는 빈 목록 표시)
-- 데이터 생성: 폼 제출 → API 호출 → 목록 갱신
-- 데이터 삭제: 삭제 버튼 → API 호출 → 목록 갱신
-- 브라우저 콘솔에 에러 없음
-
-**주의사항**
-- Task 1-1 (백엔드 활성화) 완료 후 진행
-- `client/src/core/api/client.ts`의 `baseURL`이 올바른지 확인 (`.env`의 `VITE_API_BASE_URL`)
-- UI 컴포넌트(Button 등)가 Task 1-3에서 완성되므로, 기능 동작 우선 — 스타일은 Task 1-3 이후 자동 반영
-
----
-
-### Task 1-3: UI 컴포넌트 실제 스타일 완성 (Button/Card/Input/Modal)
+## ✅ Task 2: UI 컴포넌트 실제 스타일 완성 (Button/Card/Input/Modal) — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > Tailwind CSS 스타일 적용 작업. 디자인 판단보다 명세대로 구현하는 작업.
@@ -172,7 +131,7 @@ Phase 3 (품질 보강)                 ← Phase 1 완료 후 (Phase 2와 병�
 
 ---
 
-### Task 1-4: Makefile 및 원커맨드 셋업
+## Task 3: Makefile 및 원커맨드 셋업
 
 **추천 모델**: `claude-sonnet-4-6`
 > 단순 파일 생성 작업. Makefile 문법과 bash 스크립트 작성.
@@ -216,7 +175,41 @@ seed     # python scripts/seed.py
 
 ---
 
-### Task 1-5: SQLite 폴백 + DB 시드 스크립트
+## Task 4: sample_domain 프론트엔드 라우트 등록 및 동작 확인
+
+**추천 모델**: `claude-sonnet-4-6`
+> App.tsx 라우트 등록 + 기존 컴포넌트 연결. `client/src/domains/sample/` 구조가 이미 존재함.
+
+**작업 목표**
+`client/src/domains/sample/`의 기존 페이지·컴포넌트를 `App.tsx`에 등록하고, API 연결이 실제로 동작하도록 완성한다.
+
+**작업 범위**
+
+| 작업 | 파일 경로 |
+|------|-----------|
+| 수정 | `client/src/App.tsx` — `/sample` 라우트 추가, SamplePage import |
+| 수정/확인 | `client/src/domains/sample/api.ts` — `VITE_API_BASE_URL` 기반 실제 엔드포인트 연결 확인 |
+| 수정/확인 | `client/src/domains/sample/store.ts` — CRUD 액션 동작 확인 |
+| 수정/확인 | `client/src/domains/sample/pages/SamplePage.tsx` — 실제 렌더링 동작 확인 |
+| 수정/확인 | `client/src/domains/sample/components/SampleList.tsx` — 목록 표시 동작 확인 |
+| 수정/확인 | `client/src/domains/sample/components/SampleForm.tsx` — 생성/수정 폼 동작 확인 |
+| 수정 | `client/src/core/layout/Sidebar.tsx` — sample 메뉴 항목 추가 |
+
+**완료 기준**
+- 브라우저에서 `/sample` 접근 시 페이지 정상 렌더링
+- 목록 조회: API 호출 → 데이터 표시 (또는 빈 목록 표시)
+- 데이터 생성: 폼 제출 → API 호출 → 목록 갱신
+- 데이터 삭제: 삭제 버튼 → API 호출 → 목록 갱신
+- 브라우저 콘솔에 에러 없음
+
+**주의사항**
+- Task 1 (백엔드 활성화) 완료 후 진행
+- `client/src/core/api/client.ts`의 `baseURL`이 올바른지 확인 (`.env`의 `VITE_API_BASE_URL`)
+- UI 컴포넌트(Button 등)는 Task 2에서 완성됨 — 스타일 정상 반영 확인
+
+---
+
+## Task 5: SQLite 폴백 + DB 시드 스크립트
 
 **추천 모델**: `claude-sonnet-4-6`
 > 의존성 추가 + 단순 스크립트 작성. 아키텍처 변경 없음.
@@ -241,16 +234,14 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - PostgreSQL 환경에서도 기존대로 정상 동작 (회귀 없음)
 
 **주의사항**
-- Task 1-1 (sample_domain 백엔드 활성화, 마이그레이션 생성) 완료 후 진행
+- Task 1 (sample_domain 백엔드 활성화, 마이그레이션 생성) 완료 후 진행
 - `seed.py`는 **이미 데이터가 있으면 삽입 건너뜀** (멱등성 보장)
 - SQLite는 asyncpg 드라이버를 사용하지 않으므로 database.py의 엔진 생성 로직 분기 필요
 - `scripts/seed.py`는 직접 실행(`python scripts/seed.py`)과 `asyncio.run()` 방식으로 작성
 
 ---
 
-## Phase 2 — 제품 골격 완성
-
-### Task 2-1: Auth 백엔드 도메인 구현
+## Task 6: Auth 백엔드 도메인 구현
 
 **추천 모델**: `claude-opus-4-6`
 > JWT 보안 로직, 토큰 생성/검증, 비밀번호 해싱 등 보안 설계 판단이 필요한 복잡한 작업.
@@ -292,71 +283,7 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 
 ---
 
-### Task 2-2: Auth 프론트엔드 도메인 구현
-
-**추천 모델**: `claude-sonnet-4-6`
-> 기존 도메인 구조(`client/src/domains/sample/`)를 그대로 복사·변형하는 작업. 패턴이 명확함.
-
-**작업 목표**
-로그인·회원가입 페이지와 보호 라우트를 구현하여 인증 플로우를 완성한다.
-
-**작업 범위**
-
-| 작업 | 파일 경로 | 내용 |
-|------|-----------|------|
-| 생성 | `client/src/domains/auth/types.ts` | `LoginRequest`, `RegisterRequest`, `TokenResponse`, `User` 타입 |
-| 생성 | `client/src/domains/auth/api.ts` | `login()`, `register()`, `getMe()` API 함수 |
-| 수정 | `client/src/core/store/useAuthStore.ts` | 실제 login/logout/register 액션 + token 영속성 (localStorage) |
-| 생성 | `client/src/domains/auth/pages/LoginPage.tsx` | 이메일+비밀번호 로그인 폼 |
-| 생성 | `client/src/domains/auth/pages/RegisterPage.tsx` | 회원가입 폼 (이메일, 비밀번호, 비밀번호 확인) |
-| 생성 | `client/src/domains/auth/components/ProtectedRoute.tsx` | 미인증 시 `/login` 리다이렉트 |
-| 수정 | `client/src/App.tsx` | `/login`, `/register` 라우트 추가; `/sample` 등 보호 라우트에 `ProtectedRoute` 적용 |
-| 수정 | `client/src/core/layout/Header.tsx` | 로그인 상태에 따른 로그인/로그아웃 버튼 표시 |
-
-**완료 기준**
-- `/login` 접근 시 로그인 폼 렌더링
-- 올바른 이메일+비밀번호 입력 → 로그인 성공 → `/sample`로 리다이렉트
-- 잘못된 자격증명 → 에러 메시지 표시
-- `/register` 접근 시 회원가입 폼 렌더링
-- 회원가입 성공 → `/login`으로 이동
-- 로그인하지 않은 상태에서 `/sample` 접근 → `/login`으로 리다이렉트
-- 로그인 상태에서 페이지 새로고침 후에도 세션 유지 (localStorage)
-- 로그아웃 → 토큰 삭제 → `/login`으로 이동
-
-**주의사항**
-- Task 2-1 (Auth 백엔드) 완료 후 진행
-- 비밀번호 필드는 `type="password"` 필수
-- Task 2-3 (apiClient 토큰 주입) 전까지는 로그인 후 sample API 호출 시 401이 발생할 수 있음 — Task 2-3과 함께 E2E 테스트
-
----
-
-### Task 2-3: apiClient 토큰 자동 주입 및 401 처리
-
-**추천 모델**: `claude-sonnet-4-6`
-> 기존 TODO 주석이 있는 위치에 코드를 채워 넣는 작업. 범위가 좁고 명확함.
-
-**작업 목표**
-모든 API 요청에 JWT 토큰을 자동으로 첨부하고, 401 응답 시 자동으로 로그아웃 및 로그인 페이지로 리다이렉트하도록 apiClient를 완성한다.
-
-**작업 범위**
-
-| 작업 | 파일 경로 | 내용 |
-|------|-----------|------|
-| 수정 | `client/src/core/api/client.ts` | 요청 인터셉터: `useAuthStore`에서 token 읽어 `Authorization: Bearer {token}` 헤더 추가 |
-| 수정 | `client/src/core/api/client.ts` | 응답 인터셉터: 401 시 `useAuthStore.logout()` 호출 + `/login` 리다이렉트 |
-
-**완료 기준**
-- 로그인 후 `GET /api/v1/sample/` 요청 헤더에 `Authorization: Bearer ...` 자동 포함
-- 토큰 만료 또는 무효 시 자동 로그아웃 + `/login` 이동
-- 로그인 불필요 엔드포인트 (`/health`, `/auth/login` 등)에도 토큰 헤더가 붙어도 서버에서 무시됨
-
-**주의사항**
-- Task 2-1, 2-2 완료 후 진행
-- `useAuthStore`를 Axios 인터셉터 내에서 직접 import 하면 순환 의존성 발생 가능 — `getState()` 방식으로 참조
-
----
-
-### Task 2-4: 에러 페이지 (404/500) 구현
+## Task 7: 에러 페이지 (404/500) 구현
 
 **추천 모델**: `claude-sonnet-4-6`
 > 단순 컴포넌트 2개 + App.tsx 라우트 추가. 독립적인 작업.
@@ -380,13 +307,11 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 
 **주의사항**
 - `ErrorBoundary`는 `client/src/core/errors/ErrorBoundary.tsx`에 이미 존재 — 수정 최소화
-- Phase 1 완료 후 독립적으로 진행 가능
+- Task 5 완료 후 진행
 
 ---
 
-## Phase 3 — 품질 보강
-
-### Task 3-1: 통합 테스트 작성 (sample API)
+## Task 8: 통합 테스트 작성 (sample API)
 
 **추천 모델**: `claude-sonnet-4-6`
 > 기존 주석 처리된 테스트를 복원·수정. 패턴이 명확하고 기계적인 작업.
@@ -418,13 +343,13 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - 외부 DB(Supabase) 없이 SQLite in-memory로 실행 가능
 
 **주의사항**
-- Task 1-1 (sample_domain 백엔드 활성화) 완료 후 진행
+- Task 1 (sample_domain 백엔드 활성화) 완료 후 진행
 - `conftest.py`의 `AsyncSession` 픽스처가 SQLite와 호환되는지 확인
 - 테스트 간 DB 격리 (각 테스트 후 롤백 또는 in-memory DB 초기화)
 
 ---
 
-### Task 3-2: 단위 테스트 예시 작성 (Calculator/Formatter)
+## Task 9: 단위 테스트 예시 작성 (Calculator/Formatter)
 
 **추천 모델**: `claude-sonnet-4-6`
 > 새 파일 2~3개 추가. 기존 `examples/sample_domain/` 코드 기반으로 테스트 작성.
@@ -445,8 +370,72 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 - DB 없이 순수 Python 로직만으로 실행 가능 (fixture 불필요)
 
 **주의사항**
-- Task 1-1 완료 후 진행 (Calculator/Formatter가 `domain/sample/`로 이동 완료 후)
+- Task 1 완료 후 진행 (Calculator/Formatter가 `domain/sample/`로 이동 완료 후)
 - 테스트 대상이 순수 함수여야 함 (DB 의존성 없음이 Calculator 계층의 핵심)
+
+---
+
+## Task 10: Auth 프론트엔드 도메인 구현
+
+**추천 모델**: `claude-sonnet-4-6`
+> 기존 도메인 구조(`client/src/domains/sample/`)를 그대로 복사·변형하는 작업. 패턴이 명확함.
+
+**작업 목표**
+로그인·회원가입 페이지와 보호 라우트를 구현하여 인증 플로우를 완성한다.
+
+**작업 범위**
+
+| 작업 | 파일 경로 | 내용 |
+|------|-----------|------|
+| 생성 | `client/src/domains/auth/types.ts` | `LoginRequest`, `RegisterRequest`, `TokenResponse`, `User` 타입 |
+| 생성 | `client/src/domains/auth/api.ts` | `login()`, `register()`, `getMe()` API 함수 |
+| 수정 | `client/src/core/store/useAuthStore.ts` | 실제 login/logout/register 액션 + token 영속성 (localStorage) |
+| 생성 | `client/src/domains/auth/pages/LoginPage.tsx` | 이메일+비밀번호 로그인 폼 |
+| 생성 | `client/src/domains/auth/pages/RegisterPage.tsx` | 회원가입 폼 (이메일, 비밀번호, 비밀번호 확인) |
+| 생성 | `client/src/domains/auth/components/ProtectedRoute.tsx` | 미인증 시 `/login` 리다이렉트 |
+| 수정 | `client/src/App.tsx` | `/login`, `/register` 라우트 추가; `/sample` 등 보호 라우트에 `ProtectedRoute` 적용 |
+| 수정 | `client/src/core/layout/Header.tsx` | 로그인 상태에 따른 로그인/로그아웃 버튼 표시 |
+
+**완료 기준**
+- `/login` 접근 시 로그인 폼 렌더링
+- 올바른 이메일+비밀번호 입력 → 로그인 성공 → `/sample`로 리다이렉트
+- 잘못된 자격증명 → 에러 메시지 표시
+- `/register` 접근 시 회원가입 폼 렌더링
+- 회원가입 성공 → `/login`으로 이동
+- 로그인하지 않은 상태에서 `/sample` 접근 → `/login`으로 리다이렉트
+- 로그인 상태에서 페이지 새로고침 후에도 세션 유지 (localStorage)
+- 로그아웃 → 토큰 삭제 → `/login`으로 이동
+
+**주의사항**
+- Task 6 (Auth 백엔드) 완료 후 진행
+- 비밀번호 필드는 `type="password"` 필수
+- Task 11 (apiClient 토큰 주입) 전까지는 로그인 후 sample API 호출 시 401이 발생할 수 있음 — Task 11과 함께 E2E 테스트
+
+---
+
+## Task 11: apiClient 토큰 자동 주입 및 401 처리
+
+**추천 모델**: `claude-sonnet-4-6`
+> 기존 TODO 주석이 있는 위치에 코드를 채워 넣는 작업. 범위가 좁고 명확함.
+
+**작업 목표**
+모든 API 요청에 JWT 토큰을 자동으로 첨부하고, 401 응답 시 자동으로 로그아웃 및 로그인 페이지로 리다이렉트하도록 apiClient를 완성한다.
+
+**작업 범위**
+
+| 작업 | 파일 경로 | 내용 |
+|------|-----------|------|
+| 수정 | `client/src/core/api/client.ts` | 요청 인터셉터: `useAuthStore`에서 token 읽어 `Authorization: Bearer {token}` 헤더 추가 |
+| 수정 | `client/src/core/api/client.ts` | 응답 인터셉터: 401 시 `useAuthStore.logout()` 호출 + `/login` 리다이렉트 |
+
+**완료 기준**
+- 로그인 후 `GET /api/v1/sample/` 요청 헤더에 `Authorization: Bearer ...` 자동 포함
+- 토큰 만료 또는 무효 시 자동 로그아웃 + `/login` 이동
+- 로그인 불필요 엔드포인트 (`/health`, `/auth/login` 등)에도 토큰 헤더가 붙어도 서버에서 무시됨
+
+**주의사항**
+- Task 6, Task 10 완료 후 진행
+- `useAuthStore`를 Axios 인터셉터 내에서 직접 import 하면 순환 의존성 발생 가능 — `getState()` 방식으로 참조
 
 ---
 
@@ -454,28 +443,10 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 
 | Task | 마이그레이션 파일명 | 내용 |
 |------|-------------------|------|
-| Task 1-1 | `2026-03-18-add-sample-domain` | `sample_data` 테이블 생성 |
-| Task 2-1 | `2026-03-18-add-auth-users` | `users` 테이블 생성 |
+| Task 1 | `2026-03-18-add-sample-domain` | `sample_data` 테이블 생성 |
+| Task 6 | `2026-03-18-add-auth-users` | `users` 테이블 생성 |
 
-**실행 순서**: Task 1-1 마이그레이션 → Task 2-1 마이그레이션 (순서 의존 없음, 별개 테이블)
-
----
-
-## 전체 Task 요약 및 실행 순서
-
-```
- 1  Task 1-1  백엔드 sample 활성화 + 마이그레이션   Sonnet 4.6
- 2  Task 1-3  UI 컴포넌트 스타일 완성               Sonnet 4.6
- 3  Task 1-4  Makefile + 원커맨드 셋업              Sonnet 4.6
- 4  Task 1-2  프론트 sample 라우트 등록             Sonnet 4.6
- 5  Task 1-5  SQLite 폴백 + 시드 스크립트           Sonnet 4.6
- 6  Task 2-1  Auth 백엔드 (JWT 실제 구현)           Opus 4.6
- 7  Task 2-4  에러 페이지 (404/500)                Sonnet 4.6
- 8  Task 3-1  통합 테스트 (sample API)              Sonnet 4.6
- 9  Task 3-2  단위 테스트 (Calculator/Formatter)    Sonnet 4.6
-10  Task 2-2  Auth 프론트엔드                      Sonnet 4.6
-11  Task 2-3  apiClient 토큰 자동 주입              Sonnet 4.6
-```
+**실행 순서**: Task 1 마이그레이션 → Task 6 마이그레이션 (순서 의존 없음, 별개 테이블)
 
 ---
 
