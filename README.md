@@ -86,16 +86,40 @@ vibe-web-starter/
 
 처음 시작하시는 분은 **[DOC/BEGINNER_QUICK_START.md](./DOC/BEGINNER_QUICK_START.md)**를 참조하세요.
 
-### 최소 실행 단계
+### ⚡ 원커맨드 셋업 (Makefile)
+
+```bash
+# 최초 1회 — 전체 환경 구성 (venv, pip, npm, .env, 마이그레이션, 시드)
+make setup
+
+# 개발 서버 실행 (백엔드 :8000 + 프론트엔드 :5173 동시 기동)
+make dev
+```
+
+> `make setup` 실행 전 `.env` 파일에서 `DATABASE_URL`을 설정하세요.
+> Supabase 없이 빠르게 시작하려면 `.env.example`의 SQLite 폴백 옵션 주석을 참조하세요.
+
+### Makefile 전체 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| `make setup` | 전체 개발 환경 구성 (최초 1회) |
+| `make dev` | 백엔드 + 프론트엔드 동시 실행 |
+| `make test` | pytest + 프론트엔드 lint |
+| `make lint` | black, isort, ruff, mypy, tsc, eslint 전체 검사 |
+| `make migrate` | `alembic upgrade head` 실행 |
+| `make seed` | 시드 데이터 삽입 (`scripts/seed.py`) |
+| `make clean` | `.venv`, `node_modules`, `__pycache__` 삭제 |
+
+### 수동 실행 (Makefile 없이)
 
 ```bash
 # 1. 백엔드 실행
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+.venv/bin/pip install -r requirements.txt
 cp .env.example .env
 # .env 파일 수정 (DATABASE_URL 설정)
-python -m server.main
+.venv/bin/uvicorn server.main:app --reload
 
 # 2. 프론트엔드 실행 (새 터미널)
 cd client
@@ -106,7 +130,7 @@ npm run dev
 ### 확인
 - 백엔드 API: http://localhost:8000
 - API 문서: http://localhost:8000/docs
-- 프론트엔드: http://localhost:3000
+- 프론트엔드: http://localhost:5173
 
 ---
 
