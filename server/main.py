@@ -16,6 +16,7 @@ from rich.logging import RichHandler
 from server.app.core.config import settings
 from server.app.core.database import DatabaseManager
 from server.app.core.routers import router as core_router
+from server.app.domain.sample.models import SampleDataModel  # noqa: F401 — alembic autogenerate
 from server.app.core.middleware import RequestIDMiddleware, ExternalLoggingMiddleware
 from server.app.api.v1.router import api_router
 from server.app.shared.exceptions import ApplicationException

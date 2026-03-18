@@ -29,13 +29,10 @@ if config.config_file_name is not None:
 from server.app.core.database import Base  # noqa: E402
 
 # Import all domain models to register them with Base.metadata
-# Add your domain model imports here:
-# from server.app.domain.user.models import User
-# from server.app.domain.auth.models import Session
-# from server.app.domain.menu.models import Menu, MenuRole
-# from server.app.domain.code.models import CodeMaster, CodeDetail
+from server.app.domain.sample.models import SampleDataModel  # noqa: F401
 
-# Add more imports as you create new domains
+# Add more domain model imports here as you create new domains:
+# from server.app.domain.auth.models import User
 
 # Set target metadata for autogenerate support
 target_metadata = Base.metadata
