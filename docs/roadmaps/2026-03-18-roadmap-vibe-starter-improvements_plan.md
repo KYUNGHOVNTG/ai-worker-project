@@ -464,26 +464,17 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 ## 전체 Task 요약 및 실행 순서
 
 ```
-[Phase 1 — 병렬 가능 그룹]
-① Task 1-1  백엔드 sample 활성화 + 마이그레이션   Sonnet 4.6
-② Task 1-3  UI 컴포넌트 스타일 완성               Sonnet 4.6  ← 1-1과 병렬 가능
-③ Task 1-4  Makefile + 원커맨드 셋업              Sonnet 4.6  ← 1-1과 병렬 가능
-
-[Task 1-1 완료 후]
-④ Task 1-2  프론트 sample 라우트 등록             Sonnet 4.6
-⑤ Task 1-5  SQLite 폴백 + 시드 스크립트           Sonnet 4.6  ← 1-2와 병렬 가능
-
-[Phase 1 완료 후 — 병렬 가능 그룹]
-⑥ Task 2-1  Auth 백엔드 (JWT 실제 구현)           Opus 4.6
-⑦ Task 2-4  에러 페이지 (404/500)                Sonnet 4.6  ← 2-1과 병렬 가능
-⑧ Task 3-1  통합 테스트 (sample API)              Sonnet 4.6  ← 2-1과 병렬 가능
-⑨ Task 3-2  단위 테스트 (Calculator/Formatter)    Sonnet 4.6  ← 2-1과 병렬 가능
-
-[Task 2-1 완료 후]
-⑩ Task 2-2  Auth 프론트엔드                      Sonnet 4.6
-
-[Task 2-1, 2-2 완료 후]
-⑪ Task 2-3  apiClient 토큰 자동 주입              Sonnet 4.6
+ 1  Task 1-1  백엔드 sample 활성화 + 마이그레이션   Sonnet 4.6
+ 2  Task 1-3  UI 컴포넌트 스타일 완성               Sonnet 4.6
+ 3  Task 1-4  Makefile + 원커맨드 셋업              Sonnet 4.6
+ 4  Task 1-2  프론트 sample 라우트 등록             Sonnet 4.6
+ 5  Task 1-5  SQLite 폴백 + 시드 스크립트           Sonnet 4.6
+ 6  Task 2-1  Auth 백엔드 (JWT 실제 구현)           Opus 4.6
+ 7  Task 2-4  에러 페이지 (404/500)                Sonnet 4.6
+ 8  Task 3-1  통합 테스트 (sample API)              Sonnet 4.6
+ 9  Task 3-2  단위 테스트 (Calculator/Formatter)    Sonnet 4.6
+10  Task 2-2  Auth 프론트엔드                      Sonnet 4.6
+11  Task 2-3  apiClient 토큰 자동 주입              Sonnet 4.6
 ```
 
 ---
