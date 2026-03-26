@@ -77,7 +77,7 @@ if (!(Test-Path .env)) { Copy-Item .env.example .env }
 cd client; npm install --silent; cd ..
 ```
 
-**⑤ 데이터베이스 초기화** — 테이블을 생성합니다.
+**⑤ 데이터베이스 초기화** — 테이블을 생성합니다.   `
 ```powershell
 .venv\Scripts\python -m alembic upgrade head
 ```
@@ -265,8 +265,10 @@ vibe-web-starter/
 
 | 문서 | 내용 |
 |------|------|
-| [DOC/ARCHITECTURE.md](./DOC/ARCHITECTURE.md) | 시스템 아키텍처 및 설계 원칙 |
-| [DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md) | 도메인 추가, 코딩 규칙, 체크리스트 |
+| [초보자 설치 가이드](./docs/guides/BEGINNER_SETUP_GUIDE.md) | 비개발자용 단계별 설치·실행 안내 |
+| [개발자 설치 가이드](./docs/guides/DEVELOPER_SETUP_GUIDE.md) | 개발자용 빠른 환경 구성 |
+| [아키텍처 가이드](./docs/guides/ARCHITECTURE_GUIDE.md) | 시스템 설계 철학 및 레이어 구조 |
+| [개발 가이드](./docs/guides/DEVELOPMENT_GUIDE.md) | 도메인 추가 6단계, 코딩 규칙, 마이그레이션 |
 | [server/README.md](./server/README.md) | 백엔드 상세 가이드 |
 | [client/README.md](./client/README.md) | 프론트엔드 상세 가이드 |
 
@@ -283,7 +285,7 @@ mkdir -p server/app/domain/{domain_name}/{models,schemas,repositories,calculator
 mkdir -p client/src/domains/{domain_name}/{components,pages}
 ```
 
-자세한 내용은 [DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md) 참조
+자세한 내용은 [docs/guides/DEVELOPMENT_GUIDE.md](./docs/guides/DEVELOPMENT_GUIDE.md) 참조
 
 ### DB 스키마 변경 (반드시 Alembic 사용)
 ```bash

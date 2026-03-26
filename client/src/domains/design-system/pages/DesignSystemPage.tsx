@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Users, Star, Bell, Download, Plus, Search, Filter,
+  Users, Star, Bell, Download, Plus, Search, Filter, ArrowLeft,
   Mail, Lock, ChevronRight, CheckCircle, XCircle,
   AlertCircle, Info, BarChart2, Loader2, Trash2, UserPlus,
   RefreshCw,
@@ -171,16 +171,13 @@ export const DesignSystemPage: React.FC = () => {
               vibe-web-starter에서 재사용 가능한 공통 컴포넌트 모음입니다. 모든 컴포넌트는 Indigo 브랜드 컬러를 기반으로 합니다.
             </p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" size="sm">
-              <Download className="w-4 h-4" />
-              문서 다운로드
-            </Button>
-            <Button variant="primary" size="sm">
-              <Plus className="w-4 h-4" />
-              컴포넌트 추가
-            </Button>
-          </div>
+          <a
+            href="/"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            메인으로
+          </a>
         </div>
 
         {/* ── 1. STAT CARDS ── */}

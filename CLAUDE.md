@@ -27,10 +27,10 @@
 |------|------|------|
 | 백엔드 | `server/CLAUDE.md` | 서비스·레포·모델 작성법, Alembic 워크플로 |
 | 프론트엔드 | `client/CLAUDE.md` | 컴포넌트·스토어·API 모듈 작성법 |
-| 아키텍처 | `DOC/ARCHITECTURE.md` | 전체 설계 철학 및 패턴 |
-| 개발 체크리스트 | `DOC/DEVELOPMENT_GUIDE.md` | 도메인 추가 6단계 절차 |
-| DB 마이그레이션 | `DOC/ALEMBIC_GUIDE.md` | Alembic 상세 사용법 |
-| SDD 가이드 | `docs/guides/SDD_GUIDE.md` | 스키마 기반 개발 방법론 |
+| 초보자 셋업 | `docs/guides/BEGINNER_SETUP_GUIDE.md` | 비개발자용 설치·실행 가이드 |
+| 개발자 셋업 | `docs/guides/DEVELOPER_SETUP_GUIDE.md` | 개발자용 환경 구성 가이드 |
+| 아키텍처 | `docs/guides/ARCHITECTURE_GUIDE.md` | 전체 설계 철학 및 패턴 |
+| 개발 가이드 | `docs/guides/DEVELOPMENT_GUIDE.md` | 도메인 추가 6단계, 코딩 규칙 |
 
 ## docs/ 문서 구조 및 작성 규칙
 
