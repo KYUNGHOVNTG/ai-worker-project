@@ -74,7 +74,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 | 1 | 인프라 셋업 | CSS 토큰, Tailwind 설정, 의존성 설치 | Sonnet 4.6 | ✅ |
 | 2 | 기존 UI 컴포넌트 교체 | Button, Card, Input, Modal 업데이트 | Sonnet 4.6 | ✅ |
 | 3 | 핵심 UI 컴포넌트 추가 (1) | Badge, Select, StatCard, ProgressBar, Avatar | Sonnet 4.6 | ✅ |
-| 4 | 핵심 UI 컴포넌트 추가 (2) | DataTable, Pagination, Skeleton | Sonnet 4.6 | ⬜ |
+| 4 | 핵심 UI 컴포넌트 추가 (2) | DataTable, Pagination, Skeleton | Sonnet 4.6 | ✅ |
 | 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ⬜ |
 | 6 | 훅 + 유틸 + 스토어 | useConfirm, usePagination, useTableFilter, formatters, exportExcel, toast 교체, useToastStore | Sonnet 4.6 | ⬜ |
 | 7 | index 배럴 업데이트 + 전역 마운트 | core/ui/index.ts, core/hooks/index.ts, core/store/index.ts, App.tsx | Sonnet 4.6 | ⬜ |
@@ -298,7 +298,7 @@ Badge, Select, StatCard, ProgressBar, Avatar 컴포넌트를 추가한다.
   - `client/src/core/ui/StatCard.tsx` (생성)
   - `client/src/core/ui/ProgressBar.tsx` (생성)
   - `client/src/core/ui/Avatar.tsx` (생성)
-- **커밋**: TBD
+- **커밋**: `16ff038` — [SDD] 디자인시스템 - Task 3: 핵심 UI 컴포넌트 추가 (1)
 - **다음 태스크 참고사항**:
   - Select가 `brand-500` 토큰 사용 → Indigo 자동 반영
   - StatCard가 `card-hover` CSS 클래스 사용 (Task 1에서 추가됨)
@@ -354,13 +354,20 @@ DataTable, Pagination, Skeleton(5종) 컴포넌트를 추가한다.
 - [ ] TableColumn 타입이 generic `<T>` 지원
 - [ ] 기존 파일의 의도치 않은 변경 없음
 
-### 완료 기록 (태스크 완료 후 작성)
+### 완료 기록
 
-- **완료일**: -
-- **변경 파일**: -
-- **커밋**: -
-- **다음 태스크 참고사항**: -
-- **미해결 이슈**: -
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/ui/DataTable.tsx` (생성)
+  - `client/src/core/ui/Pagination.tsx` (생성)
+  - `client/src/core/ui/Skeleton.tsx` (생성)
+  - `client/src/core/utils/exportExcel.ts` (생성 — DataTable 의존성으로 선행 생성)
+- **커밋**: TBD
+- **다음 태스크 참고사항**:
+  - exportExcel.ts가 이미 생성됨 → Task 6에서 다시 생성할 필요 없음
+  - DataTable의 `ExportConfig` 타입은 exportExcel.ts에서 export
+  - Pagination의 `PaginationProps` 타입은 Pagination.tsx에서 export
+- **미해결 이슈**: 없음
 
 ---
 
