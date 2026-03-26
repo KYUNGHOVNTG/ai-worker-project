@@ -8,6 +8,7 @@ import { ToastContainer, ConfirmDialog } from './core/ui';
 import { checkDatabaseConnection } from './domains/system/api';
 import { toast } from './core/utils/toast';
 import { SamplePage } from './domains/sample/pages/SamplePage';
+import { DesignSystemPage } from './domains/design-system';
 
 interface DocumentConfig {
   title: string;
@@ -113,6 +114,12 @@ function LandingPage() {
                 DB 연결 테스트
               </button>
               <a
+                href="/design-system"
+                className="px-5 py-2 rounded-xl text-sm font-bold border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all active:scale-95"
+              >
+                디자인 시스템
+              </a>
+              <a
                 href="/sample"
                 className="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all active:scale-95"
               >
@@ -217,6 +224,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/sample" element={<SamplePage />} />
+        <Route path="/design-system" element={<DesignSystemPage />} />
       </Routes>
     </>
   );

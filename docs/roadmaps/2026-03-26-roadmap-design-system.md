@@ -78,7 +78,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 | 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ✅ |
 | 6 | 훅 + 유틸 + 스토어 | useConfirm, usePagination, useTableFilter, formatters, exportExcel, toast 교체, useToastStore | Sonnet 4.6 | ✅ |
 | 7 | index 배럴 업데이트 + 전역 마운트 | core/ui/index.ts, core/hooks/index.ts, core/store/index.ts, App.tsx | Sonnet 4.6 | ✅ |
-| 8 | 쇼케이스 페이지 + 라우트 | DesignSystemPage.tsx 생성, App.tsx 라우트 등록 | Opus 4.6 | ⬜ |
+| 8 | 쇼케이스 페이지 + 라우트 | DesignSystemPage.tsx 생성, App.tsx 라우트 등록 | Opus 4.6 | ✅ |
 
 상태: ⬜ 대기 / 🔄 진행중 / ✅ 완료
 
@@ -597,7 +597,7 @@ Toast 시스템, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect를 추�
   - `client/src/core/store/index.ts` (수정 — useToastStore 추가)
   - `client/src/core/utils/index.ts` (생성 — 유틸 배럴 export)
   - `client/src/App.tsx` (수정 — ToastContainer, ConfirmDialog 전역 마운트)
-- **커밋**: TBD
+- **커밋**: `552a6c3` — [SDD] 디자인시스템 - Task 7: index 배럴 업데이트 + 전역 마운트
 - **다음 태스크 참고사항**:
   - 모든 컴포넌트/훅/유틸이 배럴 export됨 → DesignSystemPage에서 `@/core/ui`, `@/core/hooks`, `@/core/utils` 사용 가능
   - ToastContainer, ConfirmDialog가 App.tsx 루트에 마운트됨 → DesignSystemPage에서 별도 마운트 불필요
@@ -665,10 +665,14 @@ MNS_PMS의 DesignSystemPage를 기반으로 이 프로젝트용 쇼케이스 페
 - [ ] `App.tsx`에 라우트 등록 확인
 - [ ] 기존 파일의 의도치 않은 변경 없음
 
-### 완료 기록 (태스크 완료 후 작성)
+### 완료 기록
 
-- **완료일**: -
-- **변경 파일**: -
-- **커밋**: -
-- **다음 태스크 참고사항**: -
-- **미해결 이슈**: -
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/domains/design-system/pages/DesignSystemPage.tsx` (생성)
+  - `client/src/domains/design-system/pages/index.ts` (생성)
+  - `client/src/domains/design-system/index.ts` (생성)
+  - `client/src/App.tsx` (수정 — 라우트 등록 + LandingPage 링크 추가)
+- **커밋**: TBD
+- **다음 태스크 참고사항**: 없음 (마지막 태스크)
+- **미해결 이슈**: 없음
