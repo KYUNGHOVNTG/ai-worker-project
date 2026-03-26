@@ -59,7 +59,7 @@ python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt -q
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
 cd client; npm install --silent; cd ..
-.venv\Scripts\alembic upgrade head
+.venv\Scripts\python -m alembic upgrade head
 .venv\Scripts\python scripts\seed.py
 
 # 개발 서버 실행
