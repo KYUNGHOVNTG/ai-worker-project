@@ -6,10 +6,10 @@ System API 엔드포인트
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.core.database import get_db
-from server.app.domain.system.repositories import ConnectionTestRepository
 from server.app.domain.system.schemas import DBCheckResponse
 
 router = APIRouter(prefix="/system", tags=["system"])
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/system", tags=["system"])
     "/db-check",
     response_model=DBCheckResponse,
     summary="데이터베이스 연결 테스트",
-    description="Supabase 데이터베이스 연결 상태를 확인하고 테스트 메시지를 반환합니다.",
+    description="데이터베이스 연결 상태를 확인합니다.",
 )
 async def check_database_connection(
     db: AsyncSession = Depends(get_db),
@@ -27,8 +27,7 @@ async def check_database_connection(
     """
     데이터베이스 연결 테스트
 
-    connection_tests 테이블에서 가장 최근 레코드를 조회하여
-    데이터베이스 연결 상태를 확인합니다.
+    SELECT 1 쿼리로 DB 연결 상태를 확인합니다.
 
     Args:
         db: 데이터베이스 세션 (자동 주입)
@@ -37,27 +36,15 @@ async def check_database_connection(
         DBCheckResponse: 연결 상태 및 메시지
 
     Raises:
-        HTTPException: 데이터베이스 조회 실패 시 500 에러
+        HTTPException: 데이터베이스 연결 실패 시 500 에러
     """
     try:
-        # Repository를 사용하여 데이터 조회
-        repository = ConnectionTestRepository(db)
-        connection_test = await repository.provide()
-
-        if connection_test is None:
-            raise HTTPException(
-                status_code=404,
-                detail="connection_tests 테이블에 데이터가 없습니다. supabase_schema.sql을 실행하세요.",
-            )
-
+        await db.execute(text("SELECT 1"))
         return DBCheckResponse(
             success=True,
-            message=connection_test.message,
+            message="DB 연결 성공",
             timestamp=datetime.utcnow(),
         )
-
-    except HTTPException:
-        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,

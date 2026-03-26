@@ -80,7 +80,7 @@ function LandingPage() {
               <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                 <Zap className="text-white w-5 h-5" fill="currentColor" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900 uppercase">vibe-web-starter v1.0</span>
+              <span className="text-xl font-bold tracking-tight text-slate-900 uppercase">vibe-web-starter v2.0</span>
             </div>
 
             <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
@@ -199,7 +199,7 @@ function LandingPage() {
             <div className="flex gap-8 text-slate-400 text-sm font-medium">
               <a href="#" className="hover:text-indigo-600">Privacy Policy</a>
               <a href="#" className="hover:text-indigo-600">Terms of Service</a>
-              <a href="#" className="hover:text-indigo-600">Github</a>
+              <a href="https://github.com/kyunghovntg/vibe-web-starter" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">Github</a>
             </div>
           </div>
         </footer>
