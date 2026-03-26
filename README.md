@@ -66,7 +66,97 @@ cd client; npm install --silent; cd ..
 .venv\Scripts\python scripts\dev.py
 ```
 
-> Windows에서 `make`를 사용하려면 [Git Bash](https://git-scm.com/downloads) 또는 [GNU Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm)를 설치하세요.
+> **Windows에서 `make` 사용하기** — `make setup` / `make dev` 같은 명령어를 쓰고 싶다면 아래 가이드를 따르세요.
+
+<details>
+<summary>▶ Windows에서 <code>make</code> 설치 및 설정 (초보자 전체 과정)</summary>
+
+### 1단계 — Git Bash 설치
+
+Git을 아직 설치하지 않았다면 [git-scm.com/downloads](https://git-scm.com/downloads)에서 다운로드하세요.
+설치 중 옵션은 **모두 기본값**으로 두면 됩니다. 설치가 완료되면 **Git Bash** 터미널이 함께 설치됩니다.
+
+> 이미 Git이 설치되어 있다면 이 단계는 건너뜁니다.
+
+---
+
+### 2단계 — `make` 설치
+
+아래 두 가지 방법 중 편한 것을 선택하세요. **방법 A (winget)** 가 더 간단합니다.
+
+#### 방법 A: winget 사용 (Windows 10/11 권장)
+
+PowerShell 또는 명령 프롬프트를 열고 다음을 실행합니다:
+
+```powershell
+winget install GnuWin32.Make
+```
+
+설치가 완료되면 **3단계**로 이동하세요.
+
+#### 방법 B: 직접 다운로드
+
+1. [gnuwin32.sourceforge.net/packages/make.htm](https://gnuwin32.sourceforge.net/packages/make.htm) 접속
+2. **"Complete package, except sources"** 링크 클릭하여 설치 파일(`.exe`) 다운로드
+3. 다운로드한 `.exe` 실행 → 설치 경로는 기본값(`C:\Program Files (x86)\GnuWin32`) 유지
+
+---
+
+### 3단계 — PATH 환경 변수 등록
+
+`make`를 어느 터미널에서나 쓸 수 있게 시스템 PATH에 추가해야 합니다.
+
+1. 키보드에서 `Windows 키 + S` → "환경 변수" 검색 → **"시스템 환경 변수 편집"** 클릭
+2. 하단의 **"환경 변수(N)..."** 버튼 클릭
+3. "시스템 변수" 목록에서 **`Path`** 선택 → **"편집"** 클릭
+4. **"새로 만들기"** 클릭 후 아래 경로 붙여넣기:
+   ```
+   C:\Program Files (x86)\GnuWin32\bin
+   ```
+5. **확인 → 확인 → 확인** 으로 창을 모두 닫습니다.
+
+> winget으로 설치했다면 경로가 다를 수 있습니다.
+> Git Bash를 열고 `which make` 를 실행해서 경로가 표시되면 이미 인식된 것입니다.
+
+---
+
+### 4단계 — 설치 확인
+
+**Git Bash**를 새로 열고 (기존에 열려 있던 창은 PATH 변경이 반영 안 됩니다) 아래 명령어를 실행합니다:
+
+```bash
+make --version
+```
+
+아래와 비슷한 내용이 출력되면 정상입니다:
+
+```
+GNU Make 3.81
+...
+```
+
+---
+
+### 5단계 — VS Code에서 Git Bash를 기본 터미널로 설정
+
+VS Code 터미널에서 `make` 명령어를 바로 쓰려면 터미널을 Git Bash로 바꿔야 합니다.
+
+1. VS Code에서 `Ctrl + Shift + P` → **"Terminal: Select Default Profile"** 검색 후 클릭
+2. 목록에서 **"Git Bash"** 선택
+3. 이후 `Ctrl + `` ` `` ` 로 새 터미널을 열면 Git Bash가 기본으로 열립니다.
+
+---
+
+### 6단계 — 프로젝트 실행
+
+Git Bash 터미널에서 프로젝트 폴더로 이동한 뒤 실행합니다:
+
+```bash
+make setup   # 최초 1회: 가상환경, 의존성, DB 초기화
+make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
+```
+
+</details>
 
 ### 확인
 
