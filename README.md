@@ -55,7 +55,7 @@ make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
 **Windows (PowerShell):**
 ```powershell
 python -m venv .venv
-.venv\Scripts\pip install --upgrade pip -q
+.venv\Scripts\python -m pip install --upgrade pip -q
 .venv\Scripts\pip install -r requirements.txt -q
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
 cd client; npm install --silent; cd ..
