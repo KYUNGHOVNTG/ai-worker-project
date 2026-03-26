@@ -1,6 +1,6 @@
 """
 데이터베이스 설정 및 세션 관리
-SQLAlchemy 2.0 + asyncpg 기반 비동기 데이터베이스 연결
+SQLAlchemy 2.0 비동기 데이터베이스 연결 (PostgreSQL / SQLite 지원)
 """
 
 from typing import AsyncGenerator
@@ -19,13 +19,25 @@ from server.app.core.config import settings
 # Database Engine
 # ====================
 
-engine = create_async_engine(
-    str(settings.DATABASE_URL),
-    echo=settings.DB_ECHO,
-    pool_size=settings.DB_POOL_SIZE,
-    max_overflow=settings.DB_MAX_OVERFLOW,
-    pool_pre_ping=True,  # 연결 유효성 자동 검사
-)
+_db_url = str(settings.DATABASE_URL)
+_is_sqlite = _db_url.startswith("sqlite")
+
+if _is_sqlite:
+    # SQLite: 커넥션 풀 설정 미지원, check_same_thread 비활성화 필요
+    engine = create_async_engine(
+        _db_url,
+        echo=settings.DB_ECHO,
+        connect_args={"check_same_thread": False},
+    )
+else:
+    # PostgreSQL (asyncpg)
+    engine = create_async_engine(
+        _db_url,
+        echo=settings.DB_ECHO,
+        pool_size=settings.DB_POOL_SIZE,
+        max_overflow=settings.DB_MAX_OVERFLOW,
+        pool_pre_ping=True,  # 연결 유효성 자동 검사
+    )
 
 # ====================
 # Session Factory

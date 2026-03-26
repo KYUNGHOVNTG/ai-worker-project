@@ -46,9 +46,9 @@
 ```
  1  ✅ Task 1   백엔드 sample 활성화 + 마이그레이션   Sonnet 4.6
  2  ✅ Task 2   UI 컴포넌트 스타일 완성               Sonnet 4.6
- 3     Task 3   Makefile + 원커맨드 셋업              Sonnet 4.6
- 4     Task 4   프론트 sample 라우트 등록             Sonnet 4.6
- 5     Task 5   SQLite 폴백 + 시드 스크립트           Sonnet 4.6
+ 3  ✅ Task 3   Makefile + 원커맨드 셋업              Sonnet 4.6
+ 4  ✅ Task 4   프론트 sample 라우트 등록             Sonnet 4.6
+ 5  ✅ Task 5   SQLite 폴백 + 시드 스크립트           Sonnet 4.6
  6     Task 6   Auth 백엔드 (JWT 실제 구현)           Opus 4.6
  7     Task 7   에러 페이지 (404/500)                Sonnet 4.6
  8     Task 8   통합 테스트 (sample API)              Sonnet 4.6
@@ -131,7 +131,7 @@
 
 ---
 
-## Task 3: Makefile 및 원커맨드 셋업
+## ✅ Task 3: Makefile 및 원커맨드 셋업 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 단순 파일 생성 작업. Makefile 문법과 bash 스크립트 작성.
@@ -173,9 +173,20 @@ seed     # python scripts/seed.py
 - Python 명령어는 `.venv/bin/python` 경로 사용 (`python` 전역 명령 의존 금지)
 - macOS/Linux 모두 호환되어야 함
 
+### 완료 기록
+
+- **완료일**: 2026-03-18 (커밋 기준)
+- **변경 파일**:
+  - `Makefile` (생성) — setup/dev/test/lint/clean/migrate/seed 타겟
+  - `.env.example` (수정) — SQLite 폴백 안내 주석 추가
+  - `README.md` (수정) — Makefile 사용법 섹션 추가
+- **커밋**: `9a47def` — feat: add Makefile for one-command setup and dev workflow
+- **다음 태스크 참고사항**: `make seed` 타겟은 `scripts/seed.py`를 호출함 — Task 5에서 해당 스크립트 생성 필요
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 4: sample_domain 프론트엔드 라우트 등록 및 동작 확인
+## ✅ Task 4: sample_domain 프론트엔드 라우트 등록 및 동작 확인 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > App.tsx 라우트 등록 + 기존 컴포넌트 연결. `client/src/domains/sample/` 구조가 이미 존재함.
@@ -207,9 +218,21 @@ seed     # python scripts/seed.py
 - `client/src/core/api/client.ts`의 `baseURL`이 올바른지 확인 (`.env`의 `VITE_API_BASE_URL`)
 - UI 컴포넌트(Button 등)는 Task 2에서 완성됨 — 스타일 정상 반영 확인
 
+### 완료 기록
+
+- **완료일**: 2026-03-18 (커밋 기준, Task 1과 동일 세션)
+- **변경 파일**:
+  - `client/src/App.tsx` (수정) — `/sample` 라우트 등록, SamplePage import
+  - `client/src/core/layout/Sidebar.tsx` (수정) — sample 메뉴 항목 추가
+  - `client/src/domains/sample/api.ts` (확인) — apiClient 기반 CRUD 구현 완료
+  - `client/src/domains/sample/store.ts` (확인) — Zustand CRUD 액션 구현 완료
+- **커밋**: `2520e21` — feat: implement roadmap tasks 1-1, 1-2, 1-3
+- **다음 태스크 참고사항**: sample 프론트 정상 동작하나 apiClient에 auth 토큰 주입 미구현 — Task 11에서 처리
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 5: SQLite 폴백 + DB 시드 스크립트
+## ✅ Task 5: SQLite 폴백 + DB 시드 스크립트 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 의존성 추가 + 단순 스크립트 작성. 아키텍처 변경 없음.
@@ -238,6 +261,21 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - `seed.py`는 **이미 데이터가 있으면 삽입 건너뜀** (멱등성 보장)
 - SQLite는 asyncpg 드라이버를 사용하지 않으므로 database.py의 엔진 생성 로직 분기 필요
 - `scripts/seed.py`는 직접 실행(`python scripts/seed.py`)과 `asyncio.run()` 방식으로 작성
+
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `requirements.txt` (수정) — `aiosqlite==0.20.0` 추가
+  - `server/app/core/config.py` (수정) — `DATABASE_URL` 타입 `Optional[PostgresDsn]` → `Optional[str]` (SQLite URL 허용)
+  - `server/app/core/database.py` (수정) — SQLite 감지 후 `connect_args={"check_same_thread": False}` 조건부 처리, pool 설정 분리
+  - `scripts/__init__.py` (생성)
+  - `scripts/seed.py` (생성) — 멱등성 보장, sample_data 5건 삽입
+- **커밋**: (이번 세션 커밋 예정)
+- **다음 태스크 참고사항**:
+  - `.env`에서 `DATABASE_URL=sqlite+aiosqlite:///./dev.db` 설정 후 `alembic upgrade head` → `python scripts/seed.py` 순서로 실행
+  - Task 6 (auth) 마이그레이션 후 seed.py에 user 시드 추가 가능 (현재는 sample_data만 처리)
+- **미해결 이슈**: 없음
 
 ---
 

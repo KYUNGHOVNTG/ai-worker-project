@@ -5,6 +5,9 @@ uvicorn[standard]==0.27.0
 # 비동기 PostgreSQL 드라이버
 asyncpg==0.29.0
 
+# 비동기 SQLite 드라이버 (로컬 개발 폴백용)
+aiosqlite==0.20.0
+
 # SQLAlchemy 2.0 (ORM)
 sqlalchemy[asyncio]==2.0.25
 

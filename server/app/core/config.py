@@ -81,9 +81,9 @@ class Settings(BaseSettings):
         description="PostgreSQL 데이터베이스명"
     )
 
-    DATABASE_URL: Optional[PostgresDsn] = Field(
+    DATABASE_URL: Optional[str] = Field(
         default=None,
-        description="데이터베이스 URL (직접 제공 시)"
+        description="데이터베이스 URL (직접 제공 시). PostgreSQL 및 SQLite 모두 지원."
     )
 
     DB_ECHO: bool = Field(
