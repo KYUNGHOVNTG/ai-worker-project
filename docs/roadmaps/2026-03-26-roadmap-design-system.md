@@ -72,7 +72,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 | # | Task | 설명 | 추천 모델 | 상태 |
 |---|------|------|----------|------|
 | 1 | 인프라 셋업 | CSS 토큰, Tailwind 설정, 의존성 설치 | Sonnet 4.6 | ✅ |
-| 2 | 기존 UI 컴포넌트 교체 | Button, Card, Input, Modal 업데이트 | Sonnet 4.6 | ⬜ |
+| 2 | 기존 UI 컴포넌트 교체 | Button, Card, Input, Modal 업데이트 | Sonnet 4.6 | ✅ |
 | 3 | 핵심 UI 컴포넌트 추가 (1) | Badge, Select, StatCard, ProgressBar, Avatar | Sonnet 4.6 | ⬜ |
 | 4 | 핵심 UI 컴포넌트 추가 (2) | DataTable, Pagination, Skeleton | Sonnet 4.6 | ⬜ |
 | 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ⬜ |
@@ -168,7 +168,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
   - `client/src/index.css` (수정 — @theme brand 토큰, .card-hover 추가)
   - `client/tailwind.config.js` (수정 — slide-in 키프레임/애니메이션 추가)
   - `client/package.json` (수정 — xlsx 의존성 추가)
-- **커밋**: TBD
+- **커밋**: `2306847` — [SDD] 디자인시스템 - Task 1: 인프라 셋업
 - **다음 태스크 참고사항**:
   - brand-* 토큰이 Indigo 계열로 정의됨 → 컴포넌트에서 `brand-600` 사용 시 `#4f46e5` (Indigo 600) 적용
   - `.card-hover` 클래스가 CSS에 정의됨 → Card hover prop에서 사용 가능
@@ -232,13 +232,22 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 - [ ] 기존 파일의 의도치 않은 변경 없음
 - [ ] 하위 호환성 검증 (SamplePage 동작 확인)
 
-### 완료 기록 (태스크 완료 후 작성)
+### 완료 기록
 
-- **완료일**: -
-- **변경 파일**: -
-- **커밋**: -
-- **다음 태스크 참고사항**: -
-- **미해결 이슈**: -
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/ui/Button.tsx` (교체 — motion 제거, Loader2, indigo primary, danger variant)
+  - `client/src/core/ui/Card.tsx` (교체 — hover prop 추가, motion 제거, 새 shadow)
+  - `client/src/core/ui/Input.tsx` (교체 — brand 포커스 링, rounded-xl, 새 padding)
+  - `client/src/core/ui/Modal.tsx` (교체 — title/showCloseButton prop, createPortal 제거)
+- **커밋**: TBD
+- **다음 태스크 참고사항**:
+  - Button에서 `framer-motion` 의존성 제거됨 (Loader2 아이콘으로 대체)
+  - Card에서 `motion` 제거됨 → 렌더링 즉시 표시 (진입 애니메이션 없음)
+  - Modal에서 `createPortal` 제거됨 → AnimatePresence 직접 렌더링
+  - Input의 focus ring이 `brand-500` 토큰 사용 → Indigo 자동 반영
+  - SamplePage 하위호환성 확인 완료 (기존 props 모두 유지)
+- **미해결 이슈**: 없음
 
 ---
 

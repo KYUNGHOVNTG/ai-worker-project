@@ -1,16 +1,5 @@
-/**
- * Button Component
- *
- * 재사용 가능한 버튼 컴포넌트
- *
- * @example
- * <Button variant="primary" size="md" onClick={handleClick}>
- *   Click me
- * </Button>
- */
-
 import React from 'react';
-import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -19,18 +8,23 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const variantClasses: Record<string, string> = {
-  primary: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 shadow-sm border border-indigo-600',
-  secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 border border-slate-200',
-  outline: 'bg-transparent border border-slate-300 text-slate-700 hover:bg-slate-50 active:bg-slate-100',
-  ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 active:bg-slate-200 border border-transparent',
-  danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm border border-red-600',
+const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
+  primary:
+    'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white shadow-sm',
+  secondary:
+    'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm',
+  outline:
+    'bg-transparent text-indigo-600 border border-indigo-300 hover:bg-indigo-50',
+  ghost:
+    'bg-transparent text-slate-600 hover:bg-slate-100',
+  danger:
+    'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white shadow-sm',
 };
 
-const sizeClasses: Record<string, string> = {
-  sm: 'px-3 py-1.5 text-xs rounded-lg',
-  md: 'px-4 py-2 text-sm rounded-xl',
-  lg: 'px-6 py-3 text-base rounded-xl',
+const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
+  sm: 'px-3.5 py-1.5 text-xs gap-1.5',
+  md: 'px-5 py-2.5 text-sm gap-2',
+  lg: 'px-7 py-3 text-base gap-2',
 };
 
 export const Button: React.FC<ButtonProps> = ({
@@ -42,32 +36,19 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const isDisabled = disabled || isLoading;
-
   return (
-    <motion.button
-      whileTap={isDisabled ? undefined : { scale: 0.97 }}
+    <button
       className={[
-        'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-150 cursor-pointer',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
-        variantClasses[variant ?? 'primary'],
-        sizeClasses[size ?? 'md'],
+        'inline-flex items-center justify-center font-medium rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none',
+        variantClasses[variant],
+        sizeClasses[size],
         className,
       ].join(' ')}
-      disabled={isDisabled}
-      {...(props as React.ComponentProps<typeof motion.button>)}
+      disabled={disabled || isLoading}
+      {...props}
     >
-      {isLoading && (
-        <svg className="animate-spin h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          />
-        </svg>
-      )}
+      {isLoading && <Loader2 className="animate-spin w-4 h-4 shrink-0" />}
       {children}
-    </motion.button>
+    </button>
   );
 };
