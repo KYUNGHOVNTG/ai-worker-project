@@ -1,27 +1,16 @@
-/**
- * Toast 알림 유틸리티
- * 간단한 브라우저 알림 (추후 react-toastify 등으로 대체 가능)
- */
+import { useToastStore } from '../store/useToastStore';
 
 export const toast = {
-  /**
-   * 성공 알림
-   */
   success: (message: string) => {
-    alert(`✅ ${message}`);
+    useToastStore.getState().addToast({ message, variant: 'success' });
   },
-
-  /**
-   * 에러 알림
-   */
   error: (message: string) => {
-    alert(`❌ ${message}`);
+    useToastStore.getState().addToast({ message, variant: 'error' });
   },
-
-  /**
-   * 정보 알림
-   */
+  warning: (message: string) => {
+    useToastStore.getState().addToast({ message, variant: 'warning' });
+  },
   info: (message: string) => {
-    alert(`ℹ️ ${message}`);
+    useToastStore.getState().addToast({ message, variant: 'info' });
   },
 };
