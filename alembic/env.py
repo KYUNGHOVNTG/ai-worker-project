@@ -40,10 +40,13 @@ target_metadata = Base.metadata
 # Override sqlalchemy.url from environment variable
 database_url = os.getenv("DATABASE_URL")
 if database_url:
-    # Ensure we're using asyncpg driver
+    # Ensure we're using asyncpg driver for PostgreSQL
     if database_url.startswith("postgresql://"):
         database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
     config.set_main_option("sqlalchemy.url", database_url)
+else:
+    # SQLite 기본 폴백
+    config.set_main_option("sqlalchemy.url", "sqlite+aiosqlite:///./dev.db")
 
 
 def run_migrations_offline() -> None:
@@ -75,11 +78,15 @@ def do_run_migrations(connection: Connection) -> None:
     Args:
         connection: SQLAlchemy connection object
     """
+    # SQLite는 ALTER TABLE 제약이 있으므로 batch mode 사용
+    is_sqlite = connection.dialect.name == "sqlite"
+
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
         compare_type=True,  # Detect column type changes
         compare_server_default=True,  # Detect default value changes
+        render_as_batch=is_sqlite,  # SQLite batch mode
         # Include schemas if using multi-schema setup
         # include_schemas=True,
         # version_table_schema=target_metadata.schema,

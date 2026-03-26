@@ -6,7 +6,7 @@
 
 - **백엔드**: FastAPI + SQLAlchemy 2.0 (async) + Pydantic v2 → `server/`
 - **프론트엔드**: React 19 + Vite + TypeScript + Tailwind CSS 4 + Zustand → `client/`
-- **DB**: PostgreSQL (Supabase) + Alembic 마이그레이션
+- **DB**: SQLite (기본) / PostgreSQL (선택) + Alembic 마이그레이션
 - **아키텍처**: Layered + 도메인 플러그인 구조 (Router → Service → Repository/Calculator/Formatter)
 
 ## 핵심 규칙 (반드시 준수)
@@ -30,7 +30,6 @@
 | 아키텍처 | `DOC/ARCHITECTURE.md` | 전체 설계 철학 및 패턴 |
 | 개발 체크리스트 | `DOC/DEVELOPMENT_GUIDE.md` | 도메인 추가 6단계 절차 |
 | DB 마이그레이션 | `DOC/ALEMBIC_GUIDE.md` | Alembic 상세 사용법 |
-| 초보자 셋업 | `DOC/BEGINNER_QUICK_START.md` | 환경 구축 가이드 |
 | SDD 가이드 | `docs/guides/SDD_GUIDE.md` | 스키마 기반 개발 방법론 |
 
 ## docs/ 문서 구조 및 작성 규칙

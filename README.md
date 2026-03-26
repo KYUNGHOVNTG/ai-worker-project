@@ -1,4 +1,4 @@
-# 🚀 Vibe Web Starter
+# Vibe Web Starter
 
 > **"유지보수성 최우선" 및 "모듈화"를 핵심 가치로 하는 바이브 코딩(Vibe Coding) 환경**
 
@@ -6,11 +6,7 @@ FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 Production-Ready 풀�
 
 ---
 
-## 📖 프로젝트 개요
-
-이 프로젝트는 **확장 가능하고 유지보수하기 쉬운 AI 바이브코딩 기반 웹 서비스**를 위한 생산급(Production-Ready) 풀스택 템플릿입니다.
-
-### 핵심 특징
+## 핵심 특징
 
 - **도메인 플러그인 구조**: 새로운 비즈니스 도메인을 독립적으로 추가 가능 (충돌 최소화)
 - **계층화된 아키텍처**: 명확한 책임 분리로 테스트 가능하고 유지보수 쉬움
@@ -21,12 +17,12 @@ FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 Production-Ready 풀�
 
 ---
 
-## 🏗️ 기술 스택
+## 기술 스택
 
 ### 백엔드
 - **Framework**: FastAPI 0.109.0
 - **ORM**: SQLAlchemy 2.0.25 (async)
-- **Database**: PostgreSQL (asyncpg)
+- **Database**: SQLite (기본) / PostgreSQL (선택)
 - **Migration**: Alembic 1.13.1
 - **Validation**: Pydantic v2.5.3
 - **Auth**: JWT (python-jose)
@@ -40,66 +36,73 @@ FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 Production-Ready 풀�
 
 ---
 
-## 📂 프로젝트 구조
+## 빠른 시작
 
+### 사전 준비
+
+- **Python 3.12+**: [다운로드](https://www.python.org/downloads/) (설치 시 "Add Python to PATH" 체크)
+- **Node.js 18+**: [다운로드](https://nodejs.org/)
+- **Git**: [다운로드](https://git-scm.com/downloads)
+
+### 원커맨드 셋업
+
+**macOS / Linux:**
+```bash
+make setup   # 전체 환경 구성 (venv, pip, npm, .env, 마이그레이션, 시드)
+make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
 ```
-vibe-web-starter/
-├── 📁 DOC/                         # 📚 프로젝트 문서
-│   ├── BEGINNER_QUICK_START.md    # 빠른 시작 가이드
-│   ├── ARCHITECTURE.md             # 시스템 아키텍처
-│   ├── PROJECT_HANDOVER.md         # 인수인계 문서
-│   └── DEVELOPMENT_GUIDE.md        # 개발 가이드
-│
-├── 📁 server/                      # 백엔드 (FastAPI)
-│   ├── main.py                     # 진입점
-│   ├── README.md                   # 백엔드 가이드
-│   └── app/
-│       ├── core/                   # 핵심 인프라
-│       ├── shared/                 # 공유 컴포넌트
-│       ├── domain/                 # 비즈니스 도메인
-│       └── api/                    # API 엔드포인트
-│
-├── 📁 client/                      # 프론트엔드 (React)
-│   ├── README.md                   # 프론트엔드 가이드
-│   └── src/
-│       ├── core/                   # 핵심 유틸리티
-│       └── domains/                # 도메인별 기능
-│
-├── 📁 alembic/                     # DB 마이그레이션
-│   ├── versions/                   # 마이그레이션 파일
-│   ├── env.py                      # Alembic 환경 설정
-│   └── alembic.ini                 # Alembic 설정
-│
-├── 📁 tests/                       # 테스트
-│   ├── unit/                       # 단위 테스트
-│   └── integration/                # 통합 테스트
-│
-├── 📄 .cursorrules                 # AI 코딩 규칙
-├── 📄 .env.example                 # 환경 변수 예제
-├── 📄 requirements.txt             # Python 의존성
-└── 📄 pyproject.toml               # Python 프로젝트 설정
+
+**Windows (PowerShell):**
+```powershell
+python -m venv .venv
+.venv\Scripts\pip install --upgrade pip -q
+.venv\Scripts\pip install -r requirements.txt -q
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+cd client; npm install --silent; cd ..
+.venv\Scripts\alembic upgrade head
+.venv\Scripts\python scripts\seed.py
+
+# 개발 서버 실행
+.venv\Scripts\python scripts\dev.py
 ```
+
+> Windows에서 `make`를 사용하려면 [Git Bash](https://git-scm.com/downloads) 또는 [GNU Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm)를 설치하세요.
+
+### 확인
+
+| 서비스 | 주소 |
+|--------|------|
+| 프론트엔드 | http://localhost:5173 |
+| 백엔드 API 문서 | http://localhost:8000/docs |
+| Health Check | http://localhost:8000/core/health |
 
 ---
 
-## 🚀 빠른 시작
+## 데이터베이스 설정
 
-처음 시작하시는 분은 **[DOC/BEGINNER_QUICK_START.md](./DOC/BEGINNER_QUICK_START.md)**를 참조하세요.
+### 기본: SQLite (설정 불필요)
 
-### ⚡ 원커맨드 셋업 (Makefile)
+`make setup` 실행 시 자동으로 `dev.db` 파일이 생성됩니다. 별도 DB 설치 없이 바로 개발을 시작할 수 있습니다.
 
-```bash
-# 최초 1회 — 전체 환경 구성 (venv, pip, npm, .env, 마이그레이션, 시드)
-make setup
+### 선택: PostgreSQL / Supabase
 
-# 개발 서버 실행 (백엔드 :8000 + 프론트엔드 :5173 동시 기동)
-make dev
+운영 환경이나 PostgreSQL이 필요한 경우 `.env` 파일을 수정하세요:
+
+```env
+# SQLite 줄을 주석 처리하고 아래를 활성화
+# DATABASE_URL=sqlite+aiosqlite:///./dev.db
+DATABASE_URL=postgresql+asyncpg://user:password@host:5432/dbname
 ```
 
-> `make setup` 실행 전 `.env` 파일에서 `DATABASE_URL`을 설정하세요.
-> Supabase 없이 빠르게 시작하려면 `.env.example`의 SQLite 폴백 옵션 주석을 참조하세요.
+Supabase 사용 시:
+1. [Supabase](https://supabase.com)에서 프로젝트 생성
+2. Settings > Database > Connection string (Transaction pooler) 복사
+3. `postgresql://` → `postgresql+asyncpg://` 변경
+4. 비밀번호 특수문자 URL 인코딩 (`!` → `%21`, `@` → `%40`)
 
-### Makefile 전체 명령어
+---
+
+## Makefile 전체 명령어
 
 | 명령어 | 설명 |
 |--------|------|
@@ -109,126 +112,71 @@ make dev
 | `make lint` | black, isort, ruff, mypy, tsc, eslint 전체 검사 |
 | `make migrate` | `alembic upgrade head` 실행 |
 | `make seed` | 시드 데이터 삽입 (`scripts/seed.py`) |
+| `make sdd-sync` | 스키마 동기화 (OpenAPI → TS 타입 자동 생성) |
 | `make clean` | `.venv`, `node_modules`, `__pycache__` 삭제 |
 
-### 수동 실행 (Makefile 없이)
+---
 
-```bash
-# 1. 백엔드 실행
-python -m venv .venv
-.venv/bin/pip install -r requirements.txt
-cp .env.example .env
-# .env 파일 수정 (DATABASE_URL 설정)
-.venv/bin/uvicorn server.main:app --reload
+## 프로젝트 구조
 
-# 2. 프론트엔드 실행 (새 터미널)
-cd client
-npm install
-npm run dev
+```
+vibe-web-starter/
+├── server/                      # 백엔드 (FastAPI)
+│   ├── main.py                  # 진입점
+│   └── app/
+│       ├── core/                # 핵심 인프라
+│       ├── shared/              # 공유 컴포넌트
+│       ├── domain/              # 비즈니스 도메인
+│       └── api/                 # API 엔드포인트
+│
+├── client/                      # 프론트엔드 (React)
+│   └── src/
+│       ├── core/                # 핵심 유틸리티
+│       └── domains/             # 도메인별 기능
+│
+├── alembic/                     # DB 마이그레이션
+├── scripts/                     # 유틸리티 스크립트
+├── tests/                       # 테스트
+├── DOC/                         # 프로젝트 문서
+├── .env.example                 # 환경 변수 예제
+├── requirements.txt             # Python 의존성
+└── Makefile                     # 개발 명령어 (크로스플랫폼)
 ```
 
-### 확인
-- 백엔드 API: http://localhost:8000
-- API 문서: http://localhost:8000/docs
-- 프론트엔드: http://localhost:5173
+---
+
+## 문서 가이드
+
+| 문서 | 내용 |
+|------|------|
+| [DOC/ARCHITECTURE.md](./DOC/ARCHITECTURE.md) | 시스템 아키텍처 및 설계 원칙 |
+| [DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md) | 도메인 추가, 코딩 규칙, 체크리스트 |
+| [server/README.md](./server/README.md) | 백엔드 상세 가이드 |
+| [client/README.md](./client/README.md) | 프론트엔드 상세 가이드 |
 
 ---
 
-## 📚 문서 가이드
+## 개발 워크플로우
 
-| 문서 | 대상 | 내용 |
-|------|------|------|
-| **[DOC/BEGINNER_QUICK_START.md](./DOC/BEGINNER_QUICK_START.md)** | 초보자 | 환경 설정부터 첫 실행까지 |
-| **[DOC/ARCHITECTURE.md](./DOC/ARCHITECTURE.md)** | 개발자 | 시스템 아키텍처 및 설계 원칙 |
-| **[DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md)** | 개발자 | 도메인 추가, 코딩 규칙, 체크리스트 |
-| **[DOC/PROJECT_HANDOVER.md](./DOC/PROJECT_HANDOVER.md)** | 인수인계 | 프로젝트 전체 개요 및 운영 가이드 |
-| **[server/README.md](./server/README.md)** | 백엔드 개발자 | 백엔드 상세 가이드 |
-| **[client/README.md](./client/README.md)** | 프론트엔드 개발자 | 프론트엔드 상세 가이드 |
-| **[.cursorrules](./.cursorrules)** | AI 에이전트 | Cursor/Claude AI 코딩 규칙 |
-
----
-
-## 🔧 주요 기능
-
-### 백엔드
-- ✅ 계층화된 아키텍처 (Router → Service → Repository/Calculator/Formatter)
-- ✅ Alembic 기반 DB 마이그레이션
-- ✅ JWT 인증 및 세션 관리
-- ✅ Request ID 추적 로깅
-- ✅ 전역 예외 처리
-- ✅ Health Check & Version API
-
-### 프론트엔드
-- ✅ React 19 + TypeScript
-- ✅ Tailwind CSS 4 디자인 시스템
-- ✅ Zustand 상태 관리
-- ✅ API 클라이언트 (Axios)
-- ✅ 전역 에러/로딩 처리
-- ✅ 반응형 레이아웃
-
----
-
-## 🛠️ 개발 워크플로우
-
-### 1. 새 도메인 추가
-자세한 내용은 [DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md) 참조
-
+### 새 도메인 추가
 ```bash
-# 백엔드 도메인 생성
+# 백엔드
 mkdir -p server/app/domain/{domain_name}/{models,schemas,repositories,calculators,formatters}
 
-# 프론트엔드 도메인 생성
+# 프론트엔드
 mkdir -p client/src/domains/{domain_name}/{components,pages}
 ```
 
-### 2. DB 스키마 변경
-**반드시 Alembic 사용**
+자세한 내용은 [DOC/DEVELOPMENT_GUIDE.md](./DOC/DEVELOPMENT_GUIDE.md) 참조
 
+### DB 스키마 변경 (반드시 Alembic 사용)
 ```bash
-# 마이그레이션 생성
-alembic revision --autogenerate -m "Add user table"
-
-# 적용
-alembic upgrade head
-
-# 롤백
-alembic downgrade -1
-```
-
-### 3. 코드 품질 검사
-```bash
-# 백엔드
-black server/
-isort server/
-ruff check server/
-mypy server/
-
-# 프론트엔드
-cd client
-npm run lint
+make migrate                                              # 마이그레이션 적용
+.venv/bin/alembic revision --autogenerate -m "설명"       # 새 마이그레이션 생성
 ```
 
 ---
 
-## 🤝 기여 가이드
-
-1. `.cursorrules` 파일의 코딩 규칙 준수
-2. 모든 테스트 통과 확인
-3. 코드 포맷팅 적용
-4. PR 전 문서 업데이트
-
----
-
-## 📄 라이센스
+## 라이센스
 
 MIT License
-
----
-
-## 📧 문의
-
-GitHub Issues를 통해 문의해주세요.
-
----
-
-**Happy Vibe Coding! 🎉**

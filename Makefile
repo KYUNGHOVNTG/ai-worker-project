@@ -1,13 +1,37 @@
 .PHONY: setup dev test lint clean migrate seed sdd-sync help
 
-PYTHON := .venv/bin/python
-PIP    := .venv/bin/pip
-PYTEST := .venv/bin/pytest
-BLACK  := .venv/bin/black
-ISORT  := .venv/bin/isort
-RUFF   := .venv/bin/ruff
-MYPY   := .venv/bin/mypy
-ALEMBIC := .venv/bin/alembic
+# ──────────────────────────────────────────────
+# OS 감지: Windows(MSYS/Git Bash/WSL) vs Unix
+# ──────────────────────────────────────────────
+ifeq ($(OS),Windows_NT)
+    PYTHON := .venv\Scripts\python
+    PIP    := .venv\Scripts\pip
+    PYTEST := .venv\Scripts\pytest
+    BLACK  := .venv\Scripts\black
+    ISORT  := .venv\Scripts\isort
+    RUFF   := .venv\Scripts\ruff
+    MYPY   := .venv\Scripts\mypy
+    ALEMBIC := .venv\Scripts\alembic
+    VENV_CREATE := python -m venv .venv
+    COPY_ENV := if not exist .env copy .env.example .env
+    RM_RF := rmdir /s /q
+    FIND_CLEAN := echo skip
+    SEP := \\
+else
+    PYTHON := .venv/bin/python
+    PIP    := .venv/bin/pip
+    PYTEST := .venv/bin/pytest
+    BLACK  := .venv/bin/black
+    ISORT  := .venv/bin/isort
+    RUFF   := .venv/bin/ruff
+    MYPY   := .venv/bin/mypy
+    ALEMBIC := .venv/bin/alembic
+    VENV_CREATE := python3 -m venv .venv
+    COPY_ENV := test -f .env || cp .env.example .env
+    RM_RF := rm -rf
+    FIND_CLEAN := find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true; find . -type f -name "*.pyc" -not -path "./.venv/*" -delete 2>/dev/null || true
+    SEP := /
+endif
 
 # ──────────────────────────────────────────────
 # help
@@ -31,44 +55,32 @@ help:
 # ──────────────────────────────────────────────
 setup:
 	@echo "==> [1/5] Python 가상환경 생성 중..."
-	python3 -m venv .venv
+	$(VENV_CREATE)
 
 	@echo "==> [2/5] Python 패키지 설치 중..."
 	$(PIP) install --upgrade pip -q
 	$(PIP) install -r requirements.txt -q
 
 	@echo "==> [3/5] .env 파일 설정 중..."
-	@if [ ! -f .env ]; then \
-		cp .env.example .env; \
-		echo "    .env 파일을 .env.example에서 복사했습니다."; \
-		echo "    ⚠️  .env 파일을 열어 DATABASE_URL 등 설정을 확인하세요."; \
-	else \
-		echo "    .env 파일이 이미 존재합니다. 덮어쓰지 않습니다."; \
-	fi
+	@$(COPY_ENV)
+	@echo "    .env 파일 준비 완료 (기본: SQLite)"
 
 	@echo "==> [4/5] 프론트엔드 패키지 설치 중..."
 	cd client && npm install --silent
 
 	@echo "==> [5/5] DB 마이그레이션 + 시드 데이터 삽입 중..."
 	$(ALEMBIC) upgrade head
-	@if [ -f scripts/seed.py ]; then \
-		$(PYTHON) scripts/seed.py; \
-	else \
-		echo "    scripts/seed.py 없음 — 시드 건너뜀"; \
-	fi
+	$(PYTHON) -c "import os; exec(open('scripts/seed.py').read()) if os.path.exists('scripts/seed.py') else print('    scripts/seed.py 없음 — 시드 건너뜀')" 2>/dev/null || $(PYTHON) scripts/seed.py
 
 	@echo ""
-	@echo "✅ setup 완료! 'make dev'로 서버를 시작하세요."
+	@echo "setup 완료! 'make dev'로 서버를 시작하세요."
 
 # ──────────────────────────────────────────────
-# dev: 백엔드 + 프론트엔드 동시 실행 (Ctrl+C로 종료)
+# dev: 백엔드 + 프론트엔드 동시 실행
 # ──────────────────────────────────────────────
 dev:
 	@echo "==> 백엔드(:8000) + 프론트엔드(:5173) 시작..."
-	@trap 'kill 0' INT; \
-	$(PYTHON) -m uvicorn server.main:app --reload --host 0.0.0.0 --port 8000 & \
-	cd client && npm run dev & \
-	wait
+	$(PYTHON) scripts/dev.py
 
 # ──────────────────────────────────────────────
 # test: pytest + 프론트엔드 lint
@@ -112,26 +124,24 @@ seed:
 
 # ──────────────────────────────────────────────
 # sdd-sync: Pydantic 스키마 → OpenAPI JSON → TypeScript 타입 자동 생성
-# 백엔드 스키마를 수정한 후 이 명령을 실행하면 프론트엔드 타입이 자동 갱신됩니다.
 # ──────────────────────────────────────────────
 sdd-sync:
 	@echo "==> [1/2] OpenAPI 스펙 추출 중..."
 	$(PYTHON) scripts/export_openapi.py
 	@echo "==> [2/2] TypeScript 타입 생성 중..."
 	cd client && npx openapi-typescript src/types/openapi.json -o src/types/api.generated.ts
-	@echo "✅ SDD 타입 동기화 완료!"
+	@echo "SDD 타입 동기화 완료!"
 
 # ──────────────────────────────────────────────
 # clean: 캐시·가상환경·빌드 산출물 삭제
 # ──────────────────────────────────────────────
 clean:
 	@echo "==> .venv 삭제 중..."
-	rm -rf .venv
+	$(RM_RF) .venv
 	@echo "==> client/node_modules 삭제 중..."
-	rm -rf client/node_modules
+	$(RM_RF) client$(SEP)node_modules
 	@echo "==> __pycache__ 및 .pyc 파일 삭제 중..."
-	find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -not -path "./.venv/*" -delete 2>/dev/null || true
+	$(FIND_CLEAN)
 	@echo "==> client/dist 삭제 중..."
-	rm -rf client/dist
-	@echo "✅ clean 완료"
+	$(RM_RF) client$(SEP)dist
+	@echo "clean 완료"
