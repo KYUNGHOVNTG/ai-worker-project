@@ -83,7 +83,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL: Optional[str] = Field(
         default=None,
-        description="데이터베이스 URL (직접 제공 시). PostgreSQL 및 SQLite 모두 지원."
+        description="데이터베이스 URL. SQLite(기본) 및 PostgreSQL 모두 지원."
     )
 
     DB_ECHO: bool = Field(
@@ -99,27 +99,41 @@ class Settings(BaseSettings):
         description="데이터베이스 커넥션 풀 최대 오버플로우"
     )
 
+    # SQLite 기본 폴백 경로
+    SQLITE_FALLBACK_URL: str = Field(
+        default="sqlite+aiosqlite:///./dev.db",
+        description="DATABASE_URL 미설정 시 사용할 SQLite 기본 경로"
+    )
+
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_db_connection(cls, v: Optional[str], info) -> str:
         """
-        개별 DB 설정으로부터 DATABASE_URL을 자동 생성합니다.
+        DATABASE_URL을 결정합니다.
 
-        DATABASE_URL이 직접 제공되면 그것을 사용하고,
-        그렇지 않으면 개별 설정값으로 URL을 구성합니다.
+        우선순위:
+        1. DATABASE_URL이 직접 제공된 경우 그대로 사용
+        2. POSTGRES_HOST 등 개별 변수가 설정된 경우 PostgreSQL URL 조립
+        3. 위 모두 없으면 SQLite 폴백 (dev.db)
         """
         if v:
             return v
 
         values = info.data
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            username=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_HOST"),
-            port=values.get("POSTGRES_PORT"),
-            path=f"{values.get('POSTGRES_DB') or ''}",
-        ).unicode_string()
+        # 개별 Postgres 변수가 기본값이 아닌 경우에만 PostgreSQL URL 조립
+        host = values.get("POSTGRES_HOST", "localhost")
+        if host != "localhost":
+            return PostgresDsn.build(
+                scheme="postgresql+asyncpg",
+                username=values.get("POSTGRES_USER"),
+                password=values.get("POSTGRES_PASSWORD"),
+                host=host,
+                port=values.get("POSTGRES_PORT"),
+                path=f"{values.get('POSTGRES_DB') or ''}",
+            ).unicode_string()
+
+        # SQLite 폴백
+        return values.get("SQLITE_FALLBACK_URL", "sqlite+aiosqlite:///./dev.db")
 
     # ====================
     # Security Settings

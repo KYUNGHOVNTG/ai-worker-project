@@ -80,7 +80,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     # 시작 시 실행
     logger.info("🚀 Starting application...")
     logger.info(f"📦 Environment: {settings.ENVIRONMENT}")
-    logger.info(f"🗄️  Database: {settings.POSTGRES_DB}")
+    _db_url = str(settings.DATABASE_URL)
+    _db_label = "SQLite (dev.db)" if _db_url.startswith("sqlite") else settings.POSTGRES_DB
+    logger.info(f"🗄️  Database: {_db_label}")
 
     # TODO: 필요한 초기화 작업
     # - 데이터베이스 마이그레이션 확인
