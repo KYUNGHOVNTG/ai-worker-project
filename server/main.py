@@ -20,6 +20,7 @@ from server.app.domain.sample.models import SampleDataModel  # noqa: F401 — al
 from server.app.core.middleware import RequestIDMiddleware, ExternalLoggingMiddleware
 from server.app.api.v1.router import api_router
 from server.app.shared.exceptions import ApplicationException
+from server.app.shared.types import ApiResponse
 
 from rich.console import Console, Group
 from rich.panel import Panel
@@ -213,10 +214,7 @@ def create_application() -> FastAPI:
 
         return JSONResponse(
             status_code=exc.status_code,
-            content={
-                "error": exc.message,
-                "details": exc.details,
-            },
+            content=ApiResponse.fail(error=exc.message).model_dump(),
         )
 
     @app.exception_handler(Exception)
@@ -246,23 +244,13 @@ def create_application() -> FastAPI:
 
         # 개발 환경에서는 상세 에러 표시
         if settings.DEBUG:
-            return JSONResponse(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content={
-                    "error": "Internal server error",
-                    "details": {
-                        "type": type(exc).__name__,
-                        "message": str(exc),
-                    },
-                },
-            )
+            error_msg = f"Internal server error: [{type(exc).__name__}] {str(exc)}"
+        else:
+            error_msg = "Internal server error"
 
-        # 운영 환경에서는 간단한 에러 메시지만
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "error": "Internal server error",
-            },
+            content=ApiResponse.fail(error=error_msg).model_dump(),
         )
 
     # ====================

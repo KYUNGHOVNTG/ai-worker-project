@@ -17,6 +17,9 @@
 4. **타입 필수** — Python: 타입 힌트, TypeScript: `any` 금지
 5. **DB 스키마 변경** — 반드시 Alembic 마이그레이션 사용 (직접 수정 금지)
 6. **마이그레이션 Append-only** — 기존 `alembic/versions/` 파일 수정 금지
+7. **SDD 준수** — Pydantic 스키마가 SSOT, 프론트 타입은 `api.generated.ts`에서 re-export
+8. **표준 응답 래퍼** — 모든 API 엔드포인트는 `ApiResponse[T]`로 응답 (직접 모델 반환 금지)
+9. **스키마 동기화** — 백엔드 스키마 수정 후 반드시 `make sdd-sync` 실행
 
 ## 상세 가이드 참조 (계층별 .md)
 
@@ -28,6 +31,7 @@
 | 개발 체크리스트 | `DOC/DEVELOPMENT_GUIDE.md` | 도메인 추가 6단계 절차 |
 | DB 마이그레이션 | `DOC/ALEMBIC_GUIDE.md` | Alembic 상세 사용법 |
 | 초보자 셋업 | `DOC/BEGINNER_QUICK_START.md` | 환경 구축 가이드 |
+| SDD 가이드 | `docs/guides/SDD_GUIDE.md` | 스키마 기반 개발 방법론 |
 
 ## docs/ 문서 구조 및 작성 규칙
 
