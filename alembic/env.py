@@ -30,9 +30,7 @@ from server.app.core.database import Base  # noqa: E402
 
 # Import all domain models to register them with Base.metadata
 from server.app.domain.sample.models import SampleDataModel  # noqa: F401
-
-# Add more domain model imports here as you create new domains:
-# from server.app.domain.auth.models import User
+from server.app.domain.auth.models import UserModel  # noqa: F401
 
 # Set target metadata for autogenerate support
 target_metadata = Base.metadata

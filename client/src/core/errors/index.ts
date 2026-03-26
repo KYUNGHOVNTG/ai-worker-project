@@ -6,5 +6,7 @@
 
 export { ErrorBoundary } from './ErrorBoundary';
 export { ErrorFallback } from './ErrorFallback';
+export { ErrorPage } from './ErrorPage';
+export { NotFoundPage } from './NotFoundPage';
 export { ApiErrorHandler } from './ApiErrorHandler';
 export type { ApiErrorData } from './ApiErrorHandler';

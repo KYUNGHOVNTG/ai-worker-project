@@ -49,12 +49,12 @@
  3  ✅ Task 3   Makefile + 원커맨드 셋업              Sonnet 4.6
  4  ✅ Task 4   프론트 sample 라우트 등록             Sonnet 4.6
  5  ✅ Task 5   SQLite 폴백 + 시드 스크립트           Sonnet 4.6
- 6     Task 6   Auth 백엔드 (JWT 실제 구현)           Opus 4.6
- 7     Task 7   에러 페이지 (404/500)                Sonnet 4.6
- 8     Task 8   통합 테스트 (sample API)              Sonnet 4.6
- 9     Task 9   단위 테스트 (Calculator/Formatter)    Sonnet 4.6
-10     Task 10  Auth 프론트엔드                      Sonnet 4.6
-11     Task 11  apiClient 토큰 자동 주입              Sonnet 4.6
+ 6  ✅ Task 6   Auth 백엔드 (JWT 실제 구현)           Opus 4.6
+ 7  ✅ Task 7   에러 페이지 (404/500)                Sonnet 4.6
+ 8  ✅ Task 8   통합 테스트 (sample API)              Sonnet 4.6
+ 9  ✅ Task 9   단위 테스트 (Calculator/Formatter)    Sonnet 4.6
+10  ✅ Task 10  Auth 프론트엔드                      Sonnet 4.6
+11  ✅ Task 11  apiClient 토큰 자동 주입              Sonnet 4.6
 ```
 
 ---
@@ -279,7 +279,7 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 
 ---
 
-## Task 6: Auth 백엔드 도메인 구현
+## ✅ Task 6: Auth 백엔드 도메인 구현 — 완료
 
 **추천 모델**: `claude-opus-4-6`
 > JWT 보안 로직, 토큰 생성/검증, 비밀번호 해싱 등 보안 설계 판단이 필요한 복잡한 작업.
@@ -319,9 +319,35 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - refresh token은 선택사항 — 우선 access token만으로 구현 (과도한 복잡도 방지)
 - `verify_token()` 하드코딩 제거 시 기존 sample 엔드포인트의 auth 의존성 영향 확인
 
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `server/app/domain/auth/__init__.py` (생성) — auth 도메인 패키지
+  - `server/app/domain/auth/models/__init__.py` (생성) — `UserModel` (users 테이블)
+  - `server/app/domain/auth/schemas/__init__.py` (생성) — `RegisterRequest`, `LoginRequest`, `TokenResponse`, `UserResponse`
+  - `server/app/domain/auth/repositories/__init__.py` (생성) — `UserRepository` (get_by_email, get_by_id, create)
+  - `server/app/domain/auth/service.py` (생성) — `AuthService` (register, login, get_current_user)
+  - `server/app/core/security.py` (생성) — JWT 생성/검증, bcrypt 해싱 (python-jose + passlib)
+  - `server/app/api/v1/endpoints/auth.py` (생성) — `/auth/register`, `/auth/login`, `/auth/me` 엔드포인트
+  - `server/app/core/dependencies.py` (수정) — 스텁 → 실제 JWT 검증, `OAuth2PasswordBearer` 적용 (Swagger Authorize 버튼 활성화)
+  - `server/app/api/v1/router.py` (수정) — auth 라우터 등록
+  - `alembic/env.py` (수정) — `UserModel` import 추가
+  - `alembic/versions/20260326_1607_2026_03_26_add_auth_users.py` (생성) — users 테이블 마이그레이션
+  - `requirements.txt` (수정) — `email-validator==2.1.0`, `bcrypt==4.0.1` 추가
+- **주요 결정**:
+  - `OAuth2PasswordBearer(auto_error=False)` 사용 — Swagger UI Authorize 버튼 지원 + 선택적 인증 호환
+  - bcrypt 4.0.1로 고정 — passlib 1.7.4와 호환성 보장 (최신 bcrypt는 passlib과 호환 문제)
+  - refresh token 미구현 — 로드맵 지시대로 access token만 구현
+- **다음 태스크 참고**:
+  - sample 엔드포인트는 현재 인증 없이 접근 가능 (Task 10에서 ProtectedRoute 적용 시 프론트에서만 보호)
+  - `get_current_user` 의존성이 `{"user_id": int}` dict를 반환 — Task 10/11에서 이 형태 활용
+  - Swagger UI `/docs`에서 Authorize 버튼으로 Bearer 토큰 설정 후 테스트 가능
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 7: 에러 페이지 (404/500) 구현
+## ✅ Task 7: 에러 페이지 (404/500) 구현 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 단순 컴포넌트 2개 + App.tsx 라우트 추가. 독립적인 작업.
@@ -347,9 +373,23 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - `ErrorBoundary`는 `client/src/core/errors/ErrorBoundary.tsx`에 이미 존재 — 수정 최소화
 - Task 5 완료 후 진행
 
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/errors/NotFoundPage.tsx` (생성) — 404 페이지 (이전 페이지 + 홈으로 이동 버튼)
+  - `client/src/core/errors/ErrorPage.tsx` (생성) — 에러 페이지 (새로고침 + 홈으로 이동 버튼)
+  - `client/src/core/errors/index.ts` (수정) — `NotFoundPage`, `ErrorPage` export 추가
+  - `client/src/App.tsx` (수정) — `<Route path="*">` catch-all 라우트 → `NotFoundPage` 연결
+- **주요 결정**:
+  - `ErrorBoundary`는 기존 `ErrorFallback`을 그대로 사용 (이미 잘 구현되어 있음) — 수정 최소화 원칙 준수
+  - `ErrorPage`는 ErrorBoundary와 별개로 독립 사용 가능한 범용 에러 페이지로 생성
+- **다음 태스크 참고**: 없음
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 8: 통합 테스트 작성 (sample API)
+## ✅ Task 8: 통합 테스트 작성 (sample API) — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 기존 주석 처리된 테스트를 복원·수정. 패턴이 명확하고 기계적인 작업.
@@ -385,9 +425,21 @@ Supabase 없이도 SQLite로 로컬 개발을 시작할 수 있도록 폴백 설
 - `conftest.py`의 `AsyncSession` 픽스처가 SQLite와 호환되는지 확인
 - 테스트 간 DB 격리 (각 테스트 후 롤백 또는 in-memory DB 초기화)
 
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `tests/integration/test_sample_api.py` (수정) — TODO/pass 제거, 6개 CRUD 테스트 실제 구현
+  - `tests/conftest.py` (수정) — `get_database_session` override로 변경, `ASGITransport` 적용, `auth_headers` fixture에 실제 JWT 토큰 생성 추가
+- **주요 결정**:
+  - `get_db` 대신 `get_database_session`을 dependency override — 실제 엔드포인트가 사용하는 의존성과 일치
+  - httpx `ASGITransport` 사용 — 최신 httpx에서 `app=` 파라미터 대신 transport 사용
+- **다음 태스크 참고**: conftest의 `auth_headers` fixture가 실제 JWT를 생성하므로 Task 10 이후 인증 테스트에 바로 활용 가능
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 9: 단위 테스트 예시 작성 (Calculator/Formatter)
+## ✅ Task 9: 단위 테스트 예시 작성 (Calculator/Formatter) — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 새 파일 2~3개 추가. 기존 `examples/sample_domain/` 코드 기반으로 테스트 작성.
@@ -411,9 +463,22 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 - Task 1 완료 후 진행 (Calculator/Formatter가 `domain/sample/`로 이동 완료 후)
 - 테스트 대상이 순수 함수여야 함 (DB 의존성 없음이 Calculator 계층의 핵심)
 
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `tests/unit/test_sample_calculator.py` (생성) — SampleScoreCalculator 단위 테스트 5개
+  - `tests/unit/test_sample_formatter.py` (생성) — SampleDataFormatter 3개 + SampleDataListFormatter 2개 단위 테스트
+  - `server/app/domain/sample/schemas/__init__.py` (수정) — `SampleCalculatorInput`, `SampleCalculatorOutput` 스키마 추가 (Calculator가 참조하는데 누락되어 있던 것)
+- **주요 결정**:
+  - Calculator에서 import하는 `SampleCalculatorInput`/`SampleCalculatorOutput`이 schemas에 누락 → 추가 (기존 examples의 스키마 기반)
+  - Formatter 테스트에서 ORM 모델은 생성자로 직접 생성 (DB 불필요)
+- **다음 태스크 참고**: 없음
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 10: Auth 프론트엔드 도메인 구현
+## ✅ Task 10: Auth 프론트엔드 도메인 구현 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 기존 도메인 구조(`client/src/domains/sample/`)를 그대로 복사·변형하는 작업. 패턴이 명확함.
@@ -449,9 +514,27 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 - 비밀번호 필드는 `type="password"` 필수
 - Task 11 (apiClient 토큰 주입) 전까지는 로그인 후 sample API 호출 시 401이 발생할 수 있음 — Task 11과 함께 E2E 테스트
 
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/domains/auth/types.ts` (생성) — `LoginRequest`, `RegisterRequest`, `TokenResponse`, `User` 타입
+  - `client/src/domains/auth/api.ts` (생성) — `login()`, `register()`, `getMe()` API 함수
+  - `client/src/core/store/useAuthStore.ts` (수정) — 스텁 → 실제 login/register/logout/loadUser 구현 + localStorage 영속화
+  - `client/src/domains/auth/pages/LoginPage.tsx` (생성) — 이메일+비밀번호 로그인 폼
+  - `client/src/domains/auth/pages/RegisterPage.tsx` (생성) — 회원가입 폼 (비밀번호 확인 포함)
+  - `client/src/domains/auth/components/ProtectedRoute.tsx` (생성) — 미인증 시 `/login` 리다이렉트
+  - `client/src/App.tsx` (수정) — `/login`, `/register` 라우트 추가, `/sample`에 `ProtectedRoute` 적용
+  - `client/src/core/layout/Header.tsx` (수정) — 로그인 상태에 따른 이메일 표시 + 로그인/로그아웃 버튼
+- **주요 결정**:
+  - `useAuthStore`의 `partialize`로 token/user/isAuthenticated만 localStorage에 저장
+  - `ProtectedRoute`는 `isAuthenticated` 상태 기반 (토큰 유효성은 API 호출 시 서버에서 검증)
+- **다음 태스크 참고**: Task 11에서 apiClient에 토큰 자동 주입 필요 — 현재 sample API 호출 시 토큰이 안 붙음
+- **미해결 이슈**: 없음
+
 ---
 
-## Task 11: apiClient 토큰 자동 주입 및 401 처리
+## ✅ Task 11: apiClient 토큰 자동 주입 및 401 처리 — 완료
 
 **추천 모델**: `claude-sonnet-4-6`
 > 기존 TODO 주석이 있는 위치에 코드를 채워 넣는 작업. 범위가 좁고 명확함.
@@ -474,6 +557,18 @@ Calculator와 Formatter 계층의 단위 테스트 예시를 작성하여, 초�
 **주의사항**
 - Task 6, Task 10 완료 후 진행
 - `useAuthStore`를 Axios 인터셉터 내에서 직접 import 하면 순환 의존성 발생 가능 — `getState()` 방식으로 참조
+
+### 완료 기록
+
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/api/client.ts` (수정) — 요청 인터셉터에 토큰 자동 주입 + 응답 인터셉터에 401 자동 로그아웃/리다이렉트
+- **주요 결정**:
+  - 순환 의존성 방지를 위해 `useAuthStore` import 대신 `localStorage.getItem('auth-storage')` 직접 접근으로 토큰 조회
+  - 401 시 `localStorage.removeItem('auth-storage')` + `window.location.href = '/login'`으로 처리 (Zustand store 직접 참조 회피)
+  - `/login`, `/register` 페이지에서는 401 리다이렉트 방지 (로그인 API 자체의 401은 리다이렉트하면 안 됨)
+- **다음 태스크 참고**: 없음 (마지막 태스크)
+- **미해결 이슈**: 없음
 
 ---
 

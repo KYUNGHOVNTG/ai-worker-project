@@ -8,13 +8,12 @@ import asyncio
 from typing import AsyncGenerator, Generator
 
 import pytest
-from fastapi.testclient import TestClient
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 from server.main import app
 from server.app.core.database import Base, get_db
-from server.app.core.config import settings
+from server.app.core.dependencies import get_database_session
 
 
 # ====================
@@ -84,29 +83,19 @@ async def test_db() -> AsyncGenerator[AsyncSession, None]:
 # ====================
 
 @pytest.fixture(scope="function")
-def client() -> Generator:
-    """
-    동기 테스트 클라이언트를 제공합니다.
-
-    TODO: 실제 데이터베이스 대신 테스트 DB를 사용하도록 설정
-    """
-    with TestClient(app) as c:
-        yield c
-
-
-@pytest.fixture(scope="function")
-async def async_client(test_db: AsyncSession) -> AsyncGenerator:
+async def async_client(test_db: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     """
     비동기 테스트 클라이언트를 제공합니다.
 
     테스트 데이터베이스 세션을 사용하도록 의존성을 오버라이드합니다.
     """
-    async def override_get_db():
+    async def override_get_database_session():
         yield test_db
 
-    app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_database_session] = override_get_database_session
 
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
     app.dependency_overrides.clear()
@@ -123,7 +112,6 @@ def mock_user() -> dict:
     """
     return {
         "user_id": 1,
-        "username": "test_user",
         "email": "test@example.com",
     }
 
@@ -132,32 +120,11 @@ def mock_user() -> dict:
 def auth_headers(mock_user: dict) -> dict:
     """
     인증 헤더를 제공합니다.
-
-    TODO: 실제 JWT 토큰 생성 로직 구현
     """
-    # 실제로는 JWT 토큰을 생성해야 합니다
-    # token = create_access_token(data={"sub": mock_user["username"]})
-    # return {"Authorization": f"Bearer {token}"}
+    from server.app.core.security import create_access_token
 
-    # 현재는 더미 헤더 반환
-    return {"Authorization": "Bearer test_token"}
-
-
-# ====================
-# 테스트 데이터 Fixtures
-# ====================
-
-@pytest.fixture
-def sample_analysis_request() -> dict:
-    """
-    샘플 분석 요청 데이터를 제공합니다.
-    """
-    return {
-        "data_id": 1,
-        "analysis_type": "statistical",
-        "threshold": 0.5,
-        "include_details": True,
-    }
+    token = create_access_token(subject=str(mock_user["user_id"]))
+    return {"Authorization": f"Bearer {token}"}
 
 
 # ====================

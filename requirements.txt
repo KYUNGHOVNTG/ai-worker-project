@@ -14,6 +14,7 @@ sqlalchemy[asyncio]==2.0.25
 # Pydantic v2 (데이터 검증)
 pydantic==2.5.3
 pydantic-settings==2.1.0
+email-validator==2.1.0
 
 # 데이터베이스 마이그레이션
 alembic==1.13.1
@@ -21,6 +22,7 @@ alembic==1.13.1
 # 보안 및 인증
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
 python-multipart==0.0.6
 
 # HTTP 클라이언트 (외부 API 호출 시)

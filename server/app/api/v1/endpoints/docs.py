@@ -27,9 +27,10 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent.parent
 # 허용된 문서 파일 매핑 (보안을 위해 화이트리스트 방식)
 ALLOWED_DOCS: Dict[str, Path] = {
     "/README.md": PROJECT_ROOT / "README.md",
-    "/DOC/BEGINNER_QUICK_START.md": PROJECT_ROOT / "DOC" / "BEGINNER_QUICK_START.md",
-    "/DOC/DEVELOPMENT_GUIDE.md": PROJECT_ROOT / "DOC" / "DEVELOPMENT_GUIDE.md",
-    "/ARCHITECTURE.md": PROJECT_ROOT / "ARCHITECTURE.md",
+    "/docs/guides/BEGINNER_SETUP_GUIDE.md": PROJECT_ROOT / "docs" / "guides" / "BEGINNER_SETUP_GUIDE.md",
+    "/docs/guides/DEVELOPER_SETUP_GUIDE.md": PROJECT_ROOT / "docs" / "guides" / "DEVELOPER_SETUP_GUIDE.md",
+    "/docs/guides/ARCHITECTURE_GUIDE.md": PROJECT_ROOT / "docs" / "guides" / "ARCHITECTURE_GUIDE.md",
+    "/docs/guides/DEVELOPMENT_GUIDE.md": PROJECT_ROOT / "docs" / "guides" / "DEVELOPMENT_GUIDE.md",
     "/server/README.md": PROJECT_ROOT / "server" / "README.md",
     "/client/README.md": PROJECT_ROOT / "client" / "README.md",
 }

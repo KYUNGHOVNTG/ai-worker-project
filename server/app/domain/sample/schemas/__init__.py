@@ -122,3 +122,17 @@ class SampleDataResponse(BaseModel):
     score: Optional[float] = Field(default=None, description="점수 (0.0 ~ 1.0)")
     created_at: datetime = Field(description="생성 시각 (ISO 8601)")
     updated_at: datetime = Field(description="수정 시각 (ISO 8601)")
+
+
+class SampleCalculatorInput(BaseModel):
+    """Calculator 입력 데이터"""
+
+    value: float = Field(description="수치 값")
+    score: Optional[float] = Field(default=None, description="점수 (0.0 ~ 1.0)")
+
+
+class SampleCalculatorOutput(BaseModel):
+    """Calculator 출력 데이터"""
+
+    metrics: dict[str, float] = Field(description="계산된 지표")
+    insights: list[str] = Field(description="분석 인사이트")

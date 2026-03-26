@@ -1,59 +1,70 @@
 /**
- * Auth Store (Skeleton)
+ * Auth Store
  *
- * 인증 상태 관리
- *
- * @example
- * const { user, login, logout } = useAuthStore();
+ * 인증 상태 관리 (로그인/로그아웃/회원가입)
+ * localStorage에 토큰을 영속화합니다.
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  // TODO: 추가 사용자 정보
-}
+import * as authApi from '@/domains/auth/api';
+import type { User } from '@/domains/auth/types';
 
 interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
 
-  // Actions
   login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  setUser: (user: User) => void;
+  loadUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
 
       login: async (email: string, password: string) => {
-        // TODO: API 호출로 로그인 처리
-        // const response = await apiClient.post('/auth/login', { email, password });
-        // set({ user: response.data.user, token: response.data.token, isAuthenticated: true });
+        const result = await authApi.login({ email, password });
+        set({ token: result.access_token, isAuthenticated: true });
 
-        console.log('Login called with:', email, password);
+        // 토큰 발급 후 사용자 정보 조회
+        const user = await authApi.getMe(result.access_token);
+        set({ user });
+      },
+
+      register: async (email: string, password: string) => {
+        await authApi.register({ email, password });
       },
 
       logout: () => {
-        // TODO: 토큰 삭제, 상태 초기화
         set({ user: null, token: null, isAuthenticated: false });
       },
 
-      setUser: (user: User) => {
-        set({ user, isAuthenticated: true });
+      loadUser: async () => {
+        const { token } = get();
+        if (!token) return;
+
+        try {
+          const user = await authApi.getMe(token);
+          set({ user, isAuthenticated: true });
+        } catch {
+          // 토큰 만료/무효 → 로그아웃
+          set({ user: null, token: null, isAuthenticated: false });
+        }
       },
     }),
     {
-      name: 'auth-storage', // localStorage key
+      name: 'auth-storage',
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

@@ -1,9 +1,3 @@
-/**
- * SampleForm Component
- *
- * Sample 아이템 생성/수정 폼
- */
-
 import React, { useState } from 'react';
 import { Input, Button } from '@/core/ui';
 import type { SampleCreateData } from '../types';
@@ -12,12 +6,14 @@ interface SampleFormProps {
   initialData?: SampleCreateData;
   onSubmit: (data: SampleCreateData) => void;
   onCancel?: () => void;
+  submitLabel?: string;
 }
 
 export const SampleForm: React.FC<SampleFormProps> = ({
   initialData,
   onSubmit,
   onCancel,
+  submitLabel = '저장',
 }) => {
   const [formData, setFormData] = useState<SampleCreateData>(
     initialData ?? { name: '', value: 0, description: '' }
@@ -39,7 +35,7 @@ export const SampleForm: React.FC<SampleFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <Input
         label="이름 *"
         value={formData.name}
@@ -55,36 +51,38 @@ export const SampleForm: React.FC<SampleFormProps> = ({
         placeholder="설명 (선택)"
       />
 
-      <Input
-        label="값 *"
-        type="number"
-        step="any"
-        value={formData.value}
-        onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
-        placeholder="수치 값"
-        error={errors.value}
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          label="값 *"
+          type="number"
+          step="any"
+          value={formData.value}
+          onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
+          placeholder="수치 값"
+          error={errors.value}
+        />
 
-      <Input
-        label="점수"
-        type="number"
-        step="0.01"
-        min="0"
-        max="1"
-        value={formData.score ?? ''}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            score: e.target.value ? parseFloat(e.target.value) : undefined,
-          })
-        }
-        placeholder="0.0 ~ 1.0 (선택)"
-        helperText="0.0에서 1.0 사이의 값"
-      />
+        <Input
+          label="점수"
+          type="number"
+          step="0.01"
+          min="0"
+          max="1"
+          value={formData.score ?? ''}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              score: e.target.value ? parseFloat(e.target.value) : undefined,
+            })
+          }
+          placeholder="0.0 ~ 1.0"
+          helperText="0.0에서 1.0 사이의 값"
+        />
+      </div>
 
       <div className="flex gap-2 pt-2">
         <Button type="submit" variant="primary" className="flex-1">
-          저장
+          {submitLabel}
         </Button>
         {onCancel && (
           <Button type="button" variant="secondary" onClick={onCancel}>

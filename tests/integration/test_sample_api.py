@@ -1,7 +1,8 @@
 """
 Sample Domain API 통합 테스트
 
-API 엔드포인트의 전체 흐름을 테스트합니다.
+sample CRUD 엔드포인트의 전체 흐름을 테스트합니다.
+SQLite in-memory DB를 사용하므로 외부 DB 없이 실행 가능합니다.
 """
 
 import pytest
@@ -10,138 +11,99 @@ from fastapi import status
 
 
 @pytest.mark.integration
-class TestSampleAnalysisAPI:
-    """
-    샘플 분석 API 테스트
-    """
+class TestSampleCRUD:
+    """샘플 데이터 CRUD API 통합 테스트 (6개 시나리오)"""
 
-    async def test_analyze_data_success(
-        self,
-        async_client: AsyncClient,
-        sample_analysis_request: dict,
-    ):
-        """
-        데이터 분석 API 성공 케이스 테스트
+    async def test_create_sample(self, async_client: AsyncClient):
+        """POST /api/v1/sample/ → 201, 생성된 데이터 반환"""
+        payload = {
+            "name": "매출 데이터",
+            "description": "2026년 1분기",
+            "value": 1500000.0,
+            "score": 0.85,
+        }
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # response = await async_client.post(
-        #     "/api/v1/sample/analyze",
-        #     json=sample_analysis_request,
-        # )
-        #
-        # assert response.status_code == status.HTTP_200_OK
-        # data = response.json()
-        # assert data["data_id"] == sample_analysis_request["data_id"]
-        # assert data["analysis_type"] == sample_analysis_request["analysis_type"]
-        # assert "metrics" in data
-        # assert "insights" in data
-        pass
+        response = await async_client.post("/api/v1/sample/", json=payload)
 
-    async def test_analyze_data_invalid_request(
-        self,
-        async_client: AsyncClient,
-    ):
-        """
-        잘못된 요청 데이터 테스트
+        assert response.status_code == status.HTTP_201_CREATED
+        body = response.json()
+        assert body["success"] is True
+        data = body["data"]
+        assert data["name"] == payload["name"]
+        assert data["description"] == payload["description"]
+        assert data["value"] == payload["value"]
+        assert data["score"] == payload["score"]
+        assert "id" in data
+        assert "created_at" in data
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # invalid_request = {
-        #     "data_id": -1,  # 잘못된 ID
-        #     "analysis_type": "invalid_type",
-        # }
-        #
-        # response = await async_client.post(
-        #     "/api/v1/sample/analyze",
-        #     json=invalid_request,
-        # )
-        #
-        # assert response.status_code == status.HTTP_400_BAD_REQUEST
-        pass
+    async def test_get_sample_list(self, async_client: AsyncClient):
+        """GET /api/v1/sample/ → 200, 배열 반환"""
+        # 데이터 2건 생성
+        await async_client.post("/api/v1/sample/", json={"name": "A", "value": 1.0})
+        await async_client.post("/api/v1/sample/", json={"name": "B", "value": 2.0})
 
-    async def test_health_check(
-        self,
-        async_client: AsyncClient,
-    ):
-        """
-        헬스체크 엔드포인트 테스트
+        response = await async_client.get("/api/v1/sample/")
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # response = await async_client.get("/api/v1/sample/health")
-        #
-        # assert response.status_code == status.HTTP_200_OK
-        # data = response.json()
-        # assert data["status"] == "healthy"
-        # assert data["domain"] == "sample"
-        pass
+        assert response.status_code == status.HTTP_200_OK
+        body = response.json()
+        assert body["success"] is True
+        assert isinstance(body["data"], list)
+        assert len(body["data"]) >= 2
 
+    async def test_get_sample_by_id(self, async_client: AsyncClient):
+        """GET /api/v1/sample/{id} → 200, 단일 항목 반환"""
+        # 데이터 생성
+        create_resp = await async_client.post(
+            "/api/v1/sample/", json={"name": "조회 테스트", "value": 42.0}
+        )
+        created_id = create_resp.json()["data"]["id"]
 
-@pytest.mark.integration
-class TestSampleDataAPI:
-    """
-    샘플 데이터 CRUD API 테스트
-    """
+        response = await async_client.get(f"/api/v1/sample/{created_id}")
 
-    async def test_get_data(
-        self,
-        async_client: AsyncClient,
-    ):
-        """
-        데이터 조회 테스트
+        assert response.status_code == status.HTTP_200_OK
+        body = response.json()
+        assert body["success"] is True
+        assert body["data"]["id"] == created_id
+        assert body["data"]["name"] == "조회 테스트"
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # data_id = 1
-        # response = await async_client.get(f"/api/v1/sample/data/{data_id}")
-        #
-        # assert response.status_code == status.HTTP_200_OK
-        # data = response.json()
-        # assert data["id"] == data_id
-        pass
+    async def test_get_sample_not_found(self, async_client: AsyncClient):
+        """GET /api/v1/sample/99999 → 404"""
+        response = await async_client.get("/api/v1/sample/99999")
 
-    async def test_list_data(
-        self,
-        async_client: AsyncClient,
-    ):
-        """
-        데이터 목록 조회 테스트
+        assert response.status_code == status.HTTP_404_NOT_FOUND
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # response = await async_client.get(
-        #     "/api/v1/sample/data",
-        #     params={"skip": 0, "limit": 10}
-        # )
-        #
-        # assert response.status_code == status.HTTP_200_OK
-        # data = response.json()
-        # assert "items" in data
-        # assert "total" in data
-        pass
+    async def test_update_sample(self, async_client: AsyncClient):
+        """PUT /api/v1/sample/{id} → 200, 업데이트된 데이터 반환"""
+        # 데이터 생성
+        create_resp = await async_client.post(
+            "/api/v1/sample/", json={"name": "수정 전", "value": 10.0}
+        )
+        created_id = create_resp.json()["data"]["id"]
 
-    async def test_create_data(
-        self,
-        async_client: AsyncClient,
-    ):
-        """
-        데이터 생성 테스트
+        # 수정
+        update_payload = {"name": "수정 후", "value": 99.9}
+        response = await async_client.put(
+            f"/api/v1/sample/{created_id}", json=update_payload
+        )
 
-        TODO: 실제 구현 후 주석 해제
-        """
-        # create_request = {
-        #     "name": "Test Data",
-        #     "value": 42.5,
-        #     "description": "Test description"
-        # }
-        #
-        # response = await async_client.post(
-        #     "/api/v1/sample/data",
-        #     json=create_request,
-        # )
-        #
-        # assert response.status_code == status.HTTP_201_CREATED
-        # data = response.json()
-        # assert data["name"] == create_request["name"]
-        pass
+        assert response.status_code == status.HTTP_200_OK
+        body = response.json()
+        assert body["success"] is True
+        assert body["data"]["name"] == "수정 후"
+        assert body["data"]["value"] == 99.9
+
+    async def test_delete_sample(self, async_client: AsyncClient):
+        """DELETE /api/v1/sample/{id} → 204"""
+        # 데이터 생성
+        create_resp = await async_client.post(
+            "/api/v1/sample/", json={"name": "삭제 대상", "value": 0.0}
+        )
+        created_id = create_resp.json()["data"]["id"]
+
+        # 삭제
+        response = await async_client.delete(f"/api/v1/sample/{created_id}")
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        # 삭제 확인
+        get_resp = await async_client.get(f"/api/v1/sample/{created_id}")
+        assert get_resp.status_code == status.HTTP_404_NOT_FOUND

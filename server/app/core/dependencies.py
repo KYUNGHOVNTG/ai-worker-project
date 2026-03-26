@@ -7,10 +7,15 @@ FastAPI 공통 의존성 (Dependencies)
 from typing import Optional
 
 from fastapi import Depends, Header, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.app.core.config import settings
 from server.app.core.database import get_db
+from server.app.core.security import decode_access_token
+
+# Swagger UI "Authorize" 버튼 활성화를 위한 OAuth2 스킴
+# tokenUrl은 Swagger에서 토큰을 발급받는 경로 (표시 전용)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
 
 
 # ====================
@@ -36,81 +41,67 @@ async def get_database_session() -> AsyncSession:
 # ====================
 
 
+def _verify_jwt(token: str) -> dict:
+    """JWT 토큰을 디코딩하고 user_id를 반환한다."""
+    payload = decode_access_token(token)
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is invalid or expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    sub = payload.get("sub")
+    if sub is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token payload missing subject",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        user_id = int(sub)
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token subject is not a valid user ID",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return {"user_id": user_id}
+
+
 class AuthenticationChecker:
-    """
-    인증 검증 클래스
+    """인증 검증 클래스 — JWT 토큰 및 API 키 검증"""
 
-    JWT 토큰 검증, API 키 검증 등의 인증 로직을 구현합니다.
-    현재는 스텁으로 구현되어 있습니다.
-    """
-
-    async def verify_token(self, authorization: Optional[str] = Header(None)) -> dict:
+    async def verify_token(
+        self, token: Optional[str] = Depends(oauth2_scheme)
+    ) -> dict:
         """
-        JWT 토큰을 검증합니다.
-
-        Args:
-            authorization: Authorization 헤더 (Bearer {token})
+        JWT Bearer 토큰을 검증합니다.
+        OAuth2PasswordBearer가 Authorization 헤더에서 토큰을 자동 추출합니다.
 
         Returns:
-            dict: 검증된 사용자 정보
-
-        Raises:
-            HTTPException: 토큰이 유효하지 않은 경우
-
-        TODO: 실제 JWT 토큰 검증 로직 구현
-            - JWT 디코딩
-            - 토큰 만료 확인
-            - 사용자 존재 여부 확인
-            - 토큰 블랙리스트 확인
+            dict: {"user_id": int}
         """
-        if not authorization:
+        if not token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Authorization header missing",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-
-        # TODO: JWT 토큰 파싱 및 검증
-        # scheme, token = authorization.split()
-        # if scheme.lower() != "bearer":
-        #     raise HTTPException(...)
-        # payload = decode_jwt(token)
-        # return payload
-
-        # 스텁: 임시 사용자 정보 반환
-        return {"user_id": 1, "username": "test_user"}
+        return _verify_jwt(token)
 
     async def verify_api_key(self, x_api_key: Optional[str] = Header(None)) -> dict:
         """
         API 키를 검증합니다.
-
-        Args:
-            x_api_key: X-API-Key 헤더
-
-        Returns:
-            dict: 검증된 클라이언트 정보
-
-        Raises:
-            HTTPException: API 키가 유효하지 않은 경우
-
         TODO: 실제 API 키 검증 로직 구현
-            - API 키 형식 검증
-            - 데이터베이스에서 키 조회
-            - 키 만료 확인
-            - 사용량 제한 확인
         """
         if not x_api_key:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="API key missing",
             )
-
-        # TODO: API 키 검증 로직
-        # api_key_info = await verify_api_key_in_db(x_api_key)
-        # if not api_key_info:
-        #     raise HTTPException(...)
-
-        # 스텁: 임시 클라이언트 정보 반환
         return {"client_id": "test_client", "api_key": x_api_key}
 
 
@@ -129,47 +120,23 @@ async def get_current_user(
     """
     현재 인증된 사용자 정보를 반환합니다.
 
-    사용법:
-        @router.get("/me")
-        async def get_me(user: dict = Depends(get_current_user)):
-            return user
-
-    Args:
-        user_info: 검증된 사용자 정보
-
     Returns:
-        dict: 사용자 정보
+        dict: {"user_id": int}
     """
     return user_info
 
 
 async def get_optional_current_user(
-    authorization: Optional[str] = Header(None),
+    token: Optional[str] = Depends(oauth2_scheme),
 ) -> Optional[dict]:
     """
     선택적 인증: 토큰이 있으면 검증하고, 없으면 None 반환
-
-    공개 API에서 인증된 사용자에게 추가 정보를 제공하고 싶을 때 사용합니다.
-
-    사용법:
-        @router.get("/items")
-        async def get_items(user: Optional[dict] = Depends(get_optional_current_user)):
-            if user:
-                # 인증된 사용자용 로직
-            else:
-                # 비인증 사용자용 로직
-
-    Args:
-        authorization: Authorization 헤더
-
-    Returns:
-        Optional[dict]: 사용자 정보 또는 None
     """
-    if not authorization:
+    if not token:
         return None
 
     try:
-        return await auth_checker.verify_token(authorization)
+        return _verify_jwt(token)
     except HTTPException:
         return None
 

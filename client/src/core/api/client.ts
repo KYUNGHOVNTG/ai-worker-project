@@ -59,11 +59,19 @@ class ApiClient {
           LoadingManager.show();
         }
 
-        // TODO: 인증 토큰 추가
-        // const token = localStorage.getItem('auth_token');
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`;
-        // }
+        // 인증 토큰 자동 주입 (순환 의존성 방지: getState() 직접 호출)
+        const authStorage = localStorage.getItem('auth-storage');
+        if (authStorage) {
+          try {
+            const parsed = JSON.parse(authStorage);
+            const token = parsed?.state?.token;
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+            }
+          } catch {
+            // JSON 파싱 실패 무시
+          }
+        }
 
         return config;
       },
@@ -88,12 +96,14 @@ class ApiClient {
         // 에러 처리
         const errorData = ApiErrorHandler.handle(error);
 
-        // 특정 상태 코드별 추가 처리
+        // 401 인증 에러 → 자동 로그아웃 + 로그인 페이지 리다이렉트
         if (ApiErrorHandler.isAuthError(error)) {
-          // TODO: 인증 에러 처리
-          // - 로그인 페이지로 리다이렉트
-          // - 또는 토큰 갱신 시도
-          console.warn('🔐 인증 에러:', errorData.message);
+          // auth-storage 클리어 (순환 의존성 방지: localStorage 직접 조작)
+          localStorage.removeItem('auth-storage');
+          // 현재 페이지가 로그인 관련이 아닌 경우에만 리다이렉트
+          if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
+            window.location.href = '/login';
+          }
         }
 
         // 변환된 에러 데이터 반환
