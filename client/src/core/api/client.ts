@@ -9,9 +9,14 @@
  * const response = await apiClient.get('/users');
  */
 
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { LoadingManager } from '../loading/LoadingManager';
 import { ApiErrorHandler } from '../errors/ApiErrorHandler';
+
+/** skipLoading 옵션을 지원하는 확장 설정 */
+interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
+  skipLoading?: boolean;
+}
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -50,7 +55,7 @@ class ApiClient {
       (config) => {
         // 전역 로딩 시작
         // config.skipLoading이 true이면 로딩 표시 안 함
-        if (!(config as any).skipLoading) {
+        if (!(config as ExtendedAxiosRequestConfig).skipLoading) {
           LoadingManager.show();
         }
 
@@ -100,7 +105,7 @@ class ApiClient {
   /**
    * GET 요청
    */
-  public async get<T = any>(
+  public async get<T = unknown>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
@@ -110,9 +115,9 @@ class ApiClient {
   /**
    * POST 요청
    */
-  public async post<T = any>(
+  public async post<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.instance.post<T>(url, data, config);
@@ -121,9 +126,9 @@ class ApiClient {
   /**
    * PUT 요청
    */
-  public async put<T = any>(
+  public async put<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.instance.put<T>(url, data, config);
@@ -132,9 +137,9 @@ class ApiClient {
   /**
    * PATCH 요청
    */
-  public async patch<T = any>(
+  public async patch<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.instance.patch<T>(url, data, config);
@@ -143,7 +148,7 @@ class ApiClient {
   /**
    * DELETE 요청
    */
-  public async delete<T = any>(
+  public async delete<T = unknown>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {

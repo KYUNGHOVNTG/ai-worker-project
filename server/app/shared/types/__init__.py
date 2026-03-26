@@ -5,7 +5,7 @@
 """
 
 from typing import Any, TypeVar, Generic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # ====================
@@ -16,6 +16,58 @@ T = TypeVar("T")  # 일반 타입
 TModel = TypeVar("TModel", bound=BaseModel)  # Pydantic 모델
 TEntity = TypeVar("TEntity")  # 도메인 엔티티
 TData = TypeVar("TData")  # 데이터 타입
+
+
+# ====================
+# Standard API Response (SDD 표준 응답 래퍼)
+# ====================
+
+
+class ApiResponse(BaseModel, Generic[T]):
+    """
+    표준 API 응답 래퍼
+
+    모든 API 엔드포인트는 이 래퍼를 통해 일관된 응답 구조를 반환합니다.
+    프론트엔드의 ApiResponse<T> 타입과 1:1 대응합니다.
+
+    성공 예시:
+        {"success": true, "data": {...}, "message": null}
+
+    실패 예시:
+        {"success": false, "data": null, "error": "Not found"}
+    """
+
+    success: bool = Field(description="요청 성공 여부")
+    data: T | None = Field(default=None, description="응답 데이터")
+    message: str | None = Field(default=None, description="성공 메시지")
+    error: str | None = Field(default=None, description="에러 메시지")
+
+    @classmethod
+    def ok(cls, data: T, message: str | None = None) -> "ApiResponse[T]":
+        """성공 응답 생성"""
+        return cls(success=True, data=data, message=message)
+
+    @classmethod
+    def fail(cls, error: str) -> "ApiResponse[T]":
+        """실패 응답 생성"""
+        return cls(success=False, error=error)
+
+
+class PaginatedApiResponse(BaseModel, Generic[T]):
+    """
+    페이지네이션 표준 API 응답 래퍼
+
+    목록 조회 API에서 페이지네이션 메타데이터와 함께 응답합니다.
+    """
+
+    success: bool = Field(description="요청 성공 여부")
+    data: list[T] = Field(default_factory=list, description="응답 데이터 목록")
+    total: int = Field(description="전체 아이템 수")
+    page: int = Field(description="현재 페이지")
+    page_size: int = Field(description="페이지 크기")
+    total_pages: int = Field(description="전체 페이지 수")
+    message: str | None = Field(default=None, description="성공 메시지")
+    error: str | None = Field(default=None, description="에러 메시지")
 
 
 # ====================

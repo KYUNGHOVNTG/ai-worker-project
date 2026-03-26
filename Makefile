@@ -1,4 +1,4 @@
-.PHONY: setup dev test lint clean migrate seed help
+.PHONY: setup dev test lint clean migrate seed sdd-sync help
 
 PYTHON := .venv/bin/python
 PIP    := .venv/bin/pip
@@ -22,6 +22,7 @@ help:
 	@echo "  make lint     코드 품질 전체 검사"
 	@echo "  make migrate  alembic upgrade head 실행"
 	@echo "  make seed     시드 데이터 삽입"
+	@echo "  make sdd-sync 스키마 동기화 (OpenAPI → TS 타입 자동 생성)"
 	@echo "  make clean    빌드 캐시 및 가상환경 삭제"
 	@echo ""
 
@@ -108,6 +109,17 @@ migrate:
 seed:
 	@echo "==> 시드 데이터 삽입 중..."
 	$(PYTHON) scripts/seed.py
+
+# ──────────────────────────────────────────────
+# sdd-sync: Pydantic 스키마 → OpenAPI JSON → TypeScript 타입 자동 생성
+# 백엔드 스키마를 수정한 후 이 명령을 실행하면 프론트엔드 타입이 자동 갱신됩니다.
+# ──────────────────────────────────────────────
+sdd-sync:
+	@echo "==> [1/2] OpenAPI 스펙 추출 중..."
+	$(PYTHON) scripts/export_openapi.py
+	@echo "==> [2/2] TypeScript 타입 생성 중..."
+	cd client && npx openapi-typescript src/types/openapi.json -o src/types/api.generated.ts
+	@echo "✅ SDD 타입 동기화 완료!"
 
 # ──────────────────────────────────────────────
 # clean: 캐시·가상환경·빌드 산출물 삭제
