@@ -77,7 +77,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 | 4 | 핵심 UI 컴포넌트 추가 (2) | DataTable, Pagination, Skeleton | Sonnet 4.6 | ✅ |
 | 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ✅ |
 | 6 | 훅 + 유틸 + 스토어 | useConfirm, usePagination, useTableFilter, formatters, exportExcel, toast 교체, useToastStore | Sonnet 4.6 | ✅ |
-| 7 | index 배럴 업데이트 + 전역 마운트 | core/ui/index.ts, core/hooks/index.ts, core/store/index.ts, App.tsx | Sonnet 4.6 | ⬜ |
+| 7 | index 배럴 업데이트 + 전역 마운트 | core/ui/index.ts, core/hooks/index.ts, core/store/index.ts, App.tsx | Sonnet 4.6 | ✅ |
 | 8 | 쇼케이스 페이지 + 라우트 | DesignSystemPage.tsx 생성, App.tsx 라우트 등록 | Opus 4.6 | ⬜ |
 
 상태: ⬜ 대기 / 🔄 진행중 / ✅ 완료
@@ -505,7 +505,7 @@ Toast 시스템, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect를 추�
   - `client/src/core/hooks/useTableFilter.ts` (생성)
   - `client/src/core/utils/formatters.ts` (생성)
   - `client/src/core/utils/toast.ts` (교체 — alert → useToastStore)
-- **커밋**: TBD
+- **커밋**: `c0aaccf` — [SDD] 디자인시스템 - Task 6: 훅 + 유틸 + 스토어
 - **다음 태스크 참고사항**:
   - toast.ts 교체됨 → App.tsx의 기존 `toast.success/error` 호출이 이제 Toast UI로 표시됨
   - Task 7에서 ToastContainer를 App.tsx에 마운트해야 toast가 실제로 보임
@@ -588,13 +588,21 @@ Toast 시스템, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect를 추�
 - [ ] TypeScript 타입 누락 없음
 - [ ] 기존 파일의 의도치 않은 변경 없음
 
-### 완료 기록 (태스크 완료 후 작성)
+### 완료 기록
 
-- **완료일**: -
-- **변경 파일**: -
-- **커밋**: -
-- **다음 태스크 참고사항**: -
-- **미해결 이슈**: -
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/ui/index.ts` (수정 — 전체 컴포넌트 export)
+  - `client/src/core/hooks/index.ts` (수정 — 훅 3개 추가)
+  - `client/src/core/store/index.ts` (수정 — useToastStore 추가)
+  - `client/src/core/utils/index.ts` (생성 — 유틸 배럴 export)
+  - `client/src/App.tsx` (수정 — ToastContainer, ConfirmDialog 전역 마운트)
+- **커밋**: TBD
+- **다음 태스크 참고사항**:
+  - 모든 컴포넌트/훅/유틸이 배럴 export됨 → DesignSystemPage에서 `@/core/ui`, `@/core/hooks`, `@/core/utils` 사용 가능
+  - ToastContainer, ConfirmDialog가 App.tsx 루트에 마운트됨 → DesignSystemPage에서 별도 마운트 불필요
+  - toast.success() 호출 시 Toast UI가 우상단에 표시됨
+- **미해결 이슈**: 없음
 
 ---
 

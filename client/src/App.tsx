@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Activity, Zap, ArrowRight, Database, FileCode, BookOpen, Layers, Layout, Code } from 'lucide-react';
 import { LoadingOverlay } from './core/loading';
 import { DocumentViewer } from './components/DocumentViewer';
+import { ToastContainer, ConfirmDialog } from './core/ui';
 import { checkDatabaseConnection } from './domains/system/api';
 import { toast } from './core/utils/toast';
 import { SamplePage } from './domains/sample/pages/SamplePage';
@@ -210,10 +211,14 @@ function LandingPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/sample" element={<SamplePage />} />
-    </Routes>
+    <>
+      <ToastContainer />
+      <ConfirmDialog />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/sample" element={<SamplePage />} />
+      </Routes>
+    </>
   );
 }
 
