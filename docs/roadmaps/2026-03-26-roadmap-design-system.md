@@ -75,7 +75,7 @@ MNS_PMS 프로젝트(`D:\cursorAI\MNS_PMS\client\src\core\`)의 디자인시스�
 | 2 | 기존 UI 컴포넌트 교체 | Button, Card, Input, Modal 업데이트 | Sonnet 4.6 | ✅ |
 | 3 | 핵심 UI 컴포넌트 추가 (1) | Badge, Select, StatCard, ProgressBar, Avatar | Sonnet 4.6 | ✅ |
 | 4 | 핵심 UI 컴포넌트 추가 (2) | DataTable, Pagination, Skeleton | Sonnet 4.6 | ✅ |
-| 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ⬜ |
+| 5 | 상호작용 UI 컴포넌트 | Toast, ToastContainer, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect | Sonnet 4.6 | ✅ |
 | 6 | 훅 + 유틸 + 스토어 | useConfirm, usePagination, useTableFilter, formatters, exportExcel, toast 교체, useToastStore | Sonnet 4.6 | ⬜ |
 | 7 | index 배럴 업데이트 + 전역 마운트 | core/ui/index.ts, core/hooks/index.ts, core/store/index.ts, App.tsx | Sonnet 4.6 | ⬜ |
 | 8 | 쇼케이스 페이지 + 라우트 | DesignSystemPage.tsx 생성, App.tsx 라우트 등록 | Opus 4.6 | ⬜ |
@@ -362,7 +362,7 @@ DataTable, Pagination, Skeleton(5종) 컴포넌트를 추가한다.
   - `client/src/core/ui/Pagination.tsx` (생성)
   - `client/src/core/ui/Skeleton.tsx` (생성)
   - `client/src/core/utils/exportExcel.ts` (생성 — DataTable 의존성으로 선행 생성)
-- **커밋**: TBD
+- **커밋**: `fe24731` — [SDD] 디자인시스템 - Task 4: 핵심 UI 컴포넌트 추가 (2)
 - **다음 태스크 참고사항**:
   - exportExcel.ts가 이미 생성됨 → Task 6에서 다시 생성할 필요 없음
   - DataTable의 `ExportConfig` 타입은 exportExcel.ts에서 export
@@ -427,13 +427,24 @@ Toast 시스템, ConfirmDialog, EmptyState, Breadcrumb, Tabs, YearSelect를 추�
 - [ ] Zustand store 패턴 일관성 (create 사용)
 - [ ] 기존 파일의 의도치 않은 변경 없음
 
-### 완료 기록 (태스크 완료 후 작성)
+### 완료 기록
 
-- **완료일**: -
-- **변경 파일**: -
-- **커밋**: -
-- **다음 태스크 참고사항**: -
-- **미해결 이슈**: -
+- **완료일**: 2026-03-26
+- **변경 파일**:
+  - `client/src/core/ui/Toast.tsx` (생성)
+  - `client/src/core/ui/ToastContainer.tsx` (생성)
+  - `client/src/core/ui/ConfirmDialog.tsx` (생성)
+  - `client/src/core/ui/EmptyState.tsx` (생성)
+  - `client/src/core/ui/Breadcrumb.tsx` (생성)
+  - `client/src/core/ui/Tabs.tsx` (생성)
+  - `client/src/core/ui/YearSelect.tsx` (생성)
+  - `client/src/core/store/useToastStore.ts` (생성 — Toast 의존성으로 선행 생성)
+- **커밋**: TBD
+- **다음 태스크 참고사항**:
+  - useToastStore가 이미 생성됨 → Task 6에서 다시 생성할 필요 없음
+  - ConfirmDialog의 `useConfirmStore`가 export됨 → useConfirm 훅에서 import
+  - Breadcrumb의 `useBreadcrumbStore`, `useBreadcrumb`이 export됨
+- **미해결 이슈**: 없음
 
 ---
 
