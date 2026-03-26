@@ -53,16 +53,42 @@ make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
 ```
 
 **Windows (PowerShell):**
+
+PowerShell을 열고 프로젝트 폴더로 이동한 뒤 아래 명령어를 **순서대로** 실행하세요.
+
+**① Python 가상환경 생성** — 프로젝트 전용 패키지 공간을 만듭니다.
 ```powershell
 python -m venv .venv
+```
+
+**② Python 패키지 설치** — 백엔드 의존성을 설치합니다.
+```powershell
 .venv\Scripts\python -m pip install --upgrade pip -q
 .venv\Scripts\pip install -r requirements.txt -q
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
-cd client; npm install --silent; cd ..
-.venv\Scripts\python -m alembic upgrade head
-.venv\Scripts\python scripts\seed.py
+```
 
-# 개발 서버 실행
+**③ 환경 변수 파일 생성** — `.env.example`을 복사해 `.env`를 만듭니다. (이미 있으면 건너뜁니다)
+```powershell
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+**④ 프론트엔드 패키지 설치** — React 의존성을 설치합니다.
+```powershell
+cd client; npm install --silent; cd ..
+```
+
+**⑤ 데이터베이스 초기화** — 테이블을 생성합니다.
+```powershell
+.venv\Scripts\python -m alembic upgrade head
+```
+
+**⑥ 초기 데이터 삽입** — 샘플 데이터를 넣습니다.
+```powershell
+.venv\Scripts\python scripts\seed.py
+```
+
+**⑦ 개발 서버 실행** — 백엔드와 프론트엔드를 동시에 시작합니다.
+```powershell
 .venv\Scripts\python scripts\dev.py
 ```
 
