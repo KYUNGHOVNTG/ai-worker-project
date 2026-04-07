@@ -140,7 +140,7 @@ export function IntroPage() {
             <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
               <Zap className="text-white w-4 h-4" fill="currentColor" />
             </div>
-            <span className="text-base font-bold whitespace-nowrap text-slate-900">Vibe-Web-Starter</span>
+            <span className="text-base font-bold whitespace-nowrap text-slate-900">때리러와</span>
           </div>
           <a
             href="/docs/guides/CLAUDE_CODE_CLI_GUIDE.md"
@@ -159,7 +159,7 @@ export function IntroPage() {
         <section className="pt-20 pb-24 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-6">
             <Bot size={15} />
-            Vibe-Web-Starter v2 — 팀 공유
+            때리러와 v2 — 팀 공유
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
             토이 프로젝트에서<br />
@@ -290,7 +290,7 @@ export function IntroPage() {
                   <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
                   <div className="w-3 h-3 rounded-full bg-green-500/80" />
                 </div>
-                <span className="text-xs text-slate-500 ml-2 font-mono">claude-code — vibe-web-starter</span>
+                <span className="text-xs text-slate-500 ml-2 font-mono">claude-code — 때리러와</span>
               </div>
               <div className="p-5 space-y-4 font-mono text-sm">
                 <div>
@@ -392,7 +392,7 @@ export function IntroPage() {
       {/* Footer */}
       <footer className="border-t border-slate-200 py-8 bg-white/30 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-sm">Vibe-Web-Starter — 팀 내부 공유용</p>
+          <p className="text-slate-400 text-sm">때리러와 — 팀 내부 공유용</p>
           <button
             onClick={() => navigate('/')}
             className="text-sm text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1"
