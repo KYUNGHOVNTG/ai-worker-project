@@ -44,15 +44,7 @@ FastAPI + SQLAlchemy 2.0 + React 19 + Tailwind 4 기반의 Production-Ready 풀�
 - **Node.js 18+**: [다운로드](https://nodejs.org/)
 - **Git**: [다운로드](https://git-scm.com/downloads)
 
-### 원커맨드 셋업
-
-**macOS / Linux:**
-```bash
-make setup   # 전체 환경 구성 (venv, pip, npm, .env, 마이그레이션, 시드)
-make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
-```
-
-**Windows (PowerShell):**
+### 셋업
 
 PowerShell을 열고 프로젝트 폴더로 이동한 뒤 아래 명령어를 **순서대로** 실행하세요.
 
@@ -92,10 +84,10 @@ cd client; npm install --silent; cd ..
 .venv\Scripts\python scripts\dev.py
 ```
 
-> **Windows에서 `make` 사용하기** — `make setup` / `make dev` 같은 명령어를 쓰고 싶다면 아래 가이드를 따르세요.
+> **`make` 사용하기** — `make setup` / `make dev` 같은 명령어를 쓰고 싶다면 아래 가이드를 따르세요.
 
 <details>
-<summary>▶ Windows에서 <code>make</code> 설치 및 설정 (초보자 전체 과정)</summary>
+<summary>▶ <code>make</code> 설치 및 설정 (초보자 전체 과정)</summary>
 
 ### 1단계 — Git Bash 설치
 
@@ -253,7 +245,7 @@ vibe-web-starter/
 ├── alembic/                     # DB 마이그레이션
 ├── scripts/                     # 유틸리티 스크립트
 ├── tests/                       # 테스트
-├── DOC/                         # 프로젝트 문서
+├── docs/                        # 프로젝트 문서
 ├── .env.example                 # 환경 변수 예제
 ├── requirements.txt             # Python 의존성
 └── Makefile                     # 개발 명령어 (크로스플랫폼)

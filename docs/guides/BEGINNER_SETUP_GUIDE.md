@@ -60,25 +60,14 @@ git --version
 
 터미널을 열고 원하는 폴더로 이동한 뒤:
 
-```bash
-git clone <프로젝트 저장소 주소>
-cd vibe-web-starter-2
+```powershell
+git clone https://github.com/KYUNGHOVNTG/vibe-web-starter.git
+cd vibe-web-starter
 ```
 
 ---
 
 ## 3단계: 프로젝트 설치 및 실행
-
-### macOS / Linux 사용자
-
-터미널에서 두 줄만 실행하면 됩니다:
-
-```bash
-make setup   # 최초 1회: 모든 환경 자동 구성
-make dev     # 서버 실행
-```
-
-### Windows 사용자
 
 PowerShell을 열고 프로젝트 폴더에서 아래 명령어를 **순서대로** 실행하세요.
 
@@ -134,11 +123,7 @@ cd client; npm install --silent; cd ..
 
 설치는 최초 1회만 하면 됩니다. 이후에는 실행 명령만:
 
-```bash
-# macOS / Linux
-make dev
-
-# Windows
+```powershell
 .venv\Scripts\python scripts\dev.py
 ```
 

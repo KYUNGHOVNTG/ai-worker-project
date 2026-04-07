@@ -142,17 +142,17 @@ class SampleDomainService(BaseService[SampleAnalysisRequest, SampleAnalysisRespo
             dict: 조회된 데이터
 
         TODO: 실제 구현 시
-            - 여러 Provider 조합 가능
+            - 여러 Repository 조합 가능
             - 캐시 확인
             - 병렬 데이터 조회
         """
-        # Provider 입력 생성
-        provider_input = SampleProviderInput(
+        # Repository 입력 생성
+        repository_input = SampleRepositoryInput(
             data_id=request.data_id
         )
 
-        # Provider 호출
-        provider_output = await self.data_repository.provide(provider_input)
+        # Repository 호출
+        provider_output = await self.data_repository.provide(repository_input)
 
         # dict로 변환 (Calculator에 전달하기 위해)
         return {
@@ -379,11 +379,11 @@ class SimpleGetService(BaseService[None, SampleListResponse]):
     간단한 GET 서비스
 
     GET /api/v1/sample 엔드포인트를 위한 교과서 예제입니다.
-    Router → Service → Provider → Calculator → Formatter 흐름을 보여줍니다.
+    Router → Service → Repository → Calculator → Formatter 흐름을 보여줍니다.
 
     이 서비스는 다음을 보여줍니다:
         1. BaseService 상속 및 템플릿 메서드 패턴
-        2. Provider, Calculator, Formatter 조합
+        2. Repository, Calculator, Formatter 조합
         3. 각 레이어의 책임 분리
         4. 에러 핸들링
         5. 로깅 포인트
@@ -406,8 +406,8 @@ class SimpleGetService(BaseService[None, SampleListResponse]):
         """
         super().__init__(db)
 
-        # 의존성 주입: Provider, Calculator, Formatter 인스턴스 생성
-        self.provider = SimpleMockDataProvider(db)
+        # 의존성 주입: Repository, Calculator, Formatter 인스턴스 생성
+        self.provider = SimpleMockDataRepository(db)
         self.calculator = SimpleMockCalculator()
         self.formatter = SimpleMockFormatter()
 
@@ -429,14 +429,14 @@ class SimpleGetService(BaseService[None, SampleListResponse]):
             ServiceResult[SampleListResponse]: 실행 결과
 
         Flow:
-            1. Provider: Mock 데이터 생성
+            1. Repository: Mock 데이터 생성
             2. Calculator: 데이터 필터링 및 가공
             3. Formatter: API 응답 형식으로 변환
         """
         try:
-            # 1. Provider: 데이터 조회 (여기서는 mock 데이터)
-            provider_input = SimpleProviderInput()
-            provider_output = await self.provider.provide(provider_input)
+            # 1. Repository: 데이터 조회 (여기서는 mock 데이터)
+            repository_input = SimpleRepositoryInput()
+            provider_output = await self.provider.provide(repository_input)
 
             # 2. Calculator: 데이터 가공
             calculator_input = SimpleCalculatorInput(items=provider_output.items)

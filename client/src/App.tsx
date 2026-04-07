@@ -10,6 +10,7 @@ import { LoadingOverlay } from './core/loading';
 import { DocumentViewer } from './components/DocumentViewer';
 import { ToastContainer, ConfirmDialog } from './core/ui';
 import { checkDatabaseConnection } from './domains/system/api';
+import { useAuthStore } from './core/store/useAuthStore';
 import { toast } from './core/utils/toast';
 import { SamplePage } from './domains/sample/pages/SamplePage';
 import { DesignSystemPage } from './domains/design-system';
@@ -17,6 +18,7 @@ import { NotFoundPage } from './core/errors';
 import { LoginPage } from './domains/auth/pages/LoginPage';
 import { RegisterPage } from './domains/auth/pages/RegisterPage';
 import { ProtectedRoute } from './domains/auth/components/ProtectedRoute';
+import { IntroPage } from './domains/intro';
 
 interface DocumentConfig {
   title: string;
@@ -120,51 +122,57 @@ function LandingPage() {
       <div className="min-h-screen bg-mesh selection:bg-indigo-100">
         {/* 네비게이션 */}
         <nav className="sticky top-0 z-50 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 bg-white/70 backdrop-blur-xl border border-white/40 rounded-2xl shadow-sm">
-            <div className="flex items-center gap-2">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 bg-white/70 backdrop-blur-xl border border-white/40 rounded-2xl shadow-sm gap-4">
+            <div className="flex items-center gap-2 shrink-0">
               <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                 <Zap className="text-white w-5 h-5" fill="currentColor" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900">Vibe-Web-Starter v2.0</span>
+              <span className="text-xl font-bold tracking-tight text-slate-900 whitespace-nowrap">Vibe-Web-Starter v2</span>
             </div>
 
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-              <button onClick={() => openDocument('overview')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+            <div className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600">
+              <button onClick={() => openDocument('overview')} className="flex items-center gap-1.5 whitespace-nowrap hover:text-indigo-600 transition-colors">
                 <FileCode size={16} />
                 프로젝트 개요
               </button>
-              <button onClick={() => openDocument('architecture')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <button onClick={() => openDocument('architecture')} className="flex items-center gap-1.5 whitespace-nowrap hover:text-indigo-600 transition-colors">
                 <Layers size={16} />
                 아키텍처
               </button>
-              <button onClick={() => openDocument('devGuide')} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+              <button onClick={() => openDocument('devGuide')} className="flex items-center gap-1.5 whitespace-nowrap hover:text-indigo-600 transition-colors">
                 <BookOpen size={16} />
                 개발 가이드
               </button>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${connectionStatus === 'ok' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${connectionStatus === 'ok' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                 <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${connectionStatus === 'ok' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                 Node: {connectionStatus === 'ok' ? 'Stable' : 'Offline'}
               </div>
               <button
                 onClick={handleDBCheck}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all active:scale-95 border border-blue-200"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold whitespace-nowrap hover:bg-blue-100 transition-all active:scale-95 border border-blue-200"
                 title="DB 연결 테스트"
               >
-                <Database size={14} />
-                DB 연결 테스트
+                <Database size={13} />
+                DB 테스트
               </button>
               <a
+                href="/intro"
+                className="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border border-violet-200 text-violet-600 hover:bg-violet-50 transition-all active:scale-95"
+              >
+                팀 소개
+              </a>
+              <a
                 href="/design-system"
-                className="px-5 py-2 rounded-xl text-sm font-bold border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all active:scale-95"
+                className="hidden md:block px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all active:scale-95"
               >
                 디자인 시스템
               </a>
               <a
                 href="/sample"
-                className="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all active:scale-95"
+                className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap hover:bg-slate-800 transition-all active:scale-95"
               >
                 CRUD 데모 →
               </a>
@@ -310,8 +318,8 @@ function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { step: '01', label: '클론', cmd: 'git clone <repo-url>', desc: '프로젝트 다운로드' },
-              { step: '02', label: '셋업', cmd: 'make setup', desc: '의존성 설치 + DB 초기화' },
-              { step: '03', label: '실행', cmd: 'make dev', desc: '백엔드 + 프론트 동시 시작' },
+              { step: '02', label: '셋업', cmd: '.venv\\Scripts\\pip install -r requirements.txt', desc: '의존성 설치 + DB 초기화 (초보자 가이드 참고)' },
+              { step: '03', label: '실행', cmd: '.venv\\Scripts\\python scripts\\dev.py', desc: '백엔드 + 프론트 동시 시작' },
             ].map((item) => (
               <div key={item.step} className="relative p-6 bg-white/60 backdrop-blur-md border border-white/60 rounded-2xl">
                 <div className="text-5xl font-black text-indigo-100 absolute top-4 right-6">{item.step}</div>
@@ -431,6 +439,10 @@ function LandingPage() {
 }
 
 function App() {
+  useEffect(() => {
+    useAuthStore.getState().loadUser();
+  }, []);
+
   return (
     <>
       <ToastContainer />
@@ -441,6 +453,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/sample" element={<ProtectedRoute><SamplePage /></ProtectedRoute>} />
         <Route path="/design-system" element={<DesignSystemPage />} />
+        <Route path="/intro" element={<IntroPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

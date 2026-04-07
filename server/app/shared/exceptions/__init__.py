@@ -110,10 +110,6 @@ class RepositoryException(ApplicationException):
         super().__init__(message, status_code=500, details=details)
 
 
-# 하위 호환성을 위한 별칭 (deprecated)
-ProviderException = RepositoryException
-
-
 class CalculatorException(ApplicationException):
     """
     Calculator 계층 예외

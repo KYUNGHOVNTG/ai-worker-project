@@ -125,7 +125,7 @@ def create_application() -> FastAPI:
         ## 주요 기능
 
         - **도메인 플러그인 구조**: 새로운 도메인을 쉽게 추가 가능
-        - **계층화된 아키텍처**: Router → Service → Provider/Calculator/Formatter
+        - **계층화된 아키텍처**: Router → Service → Repository/Calculator/Formatter
         - **타입 안전성**: Pydantic v2 + SQLAlchemy 2.0
         - **비동기 처리**: async/await 기반
 
@@ -136,7 +136,7 @@ def create_application() -> FastAPI:
             ↓
         Service (비즈니스 로직 조율)
             ↓
-        ├─ Provider (데이터 조회)
+        ├─ Repository (데이터 조회)
         ├─ Calculator (계산/분석)
         └─ Formatter (응답 포맷팅)
         ```
@@ -144,7 +144,7 @@ def create_application() -> FastAPI:
         ## 새 도메인 추가 방법
 
         1. `server/app/examples/` 또는 `server/app/domain/` 에 새 디렉토리 생성
-        2. Provider, Calculator, Formatter, Service 구현
+        2. Repository, Calculator, Formatter, Service 구현
         3. `server/app/api/v1/endpoints/` 에 라우터 추가
         4. `server/app/api/v1/router.py` 에 라우터 등록
         """,

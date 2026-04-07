@@ -190,11 +190,6 @@ class SampleRepositoryOutput(BaseModel):
     score: Optional[float] = None
 
 
-# 하위 호환성을 위한 별칭 (deprecated)
-SampleProviderInput = SampleRepositoryInput
-SampleProviderOutput = SampleRepositoryOutput
-
-
 class SampleCalculatorInput(BaseModel):
     """Calculator 입력 데이터"""
     value: float
@@ -240,7 +235,7 @@ class SampleListResponse(BaseModel):
     샘플 리스트 응답 스키마
 
     GET /api/v1/sample 엔드포인트에서 반환하는 응답 구조입니다.
-    Router → Service → Provider → Formatter 흐름을 보여주는 교과서 예제입니다.
+    Router → Service → Repository → Formatter 흐름을 보여주는 교과서 예제입니다.
     """
 
     model_config = ConfigDict(
@@ -295,11 +290,6 @@ class SimpleRepositoryInput(BaseModel):
 class SimpleRepositoryOutput(BaseModel):
     """Simple Repository 출력 - 원본 데이터"""
     items: list[dict]  # Mock 데이터
-
-
-# 하위 호환성을 위한 별칭 (deprecated)
-SimpleProviderInput = SimpleRepositoryInput
-SimpleProviderOutput = SimpleRepositoryOutput
 
 
 class SimpleCalculatorInput(BaseModel):

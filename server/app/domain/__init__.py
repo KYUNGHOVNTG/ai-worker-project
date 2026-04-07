@@ -10,7 +10,7 @@ Domain 모듈
         ├── __init__.py
         ├── models/          # SQLAlchemy 모델
         ├── schemas/         # Pydantic 스키마
-        ├── providers/       # BaseProvider 구현체
+        ├── repositories/    # BaseRepository 구현체
         ├── calculators/     # BaseCalculator 구현체
         ├── formatters/      # BaseFormatter 구현체
         └── service.py       # BaseService 구현체

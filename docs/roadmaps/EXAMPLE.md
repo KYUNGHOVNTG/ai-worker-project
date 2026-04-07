@@ -7,9 +7,9 @@
 - `YYYY-MM-DD-roadmap-{name}.md`
 - 예시: `2026-03-26-roadmap-payment.md`
 
-## 로드맵 생성 방법
+## 로드맵 생성 및 실행 방법
 
 ```
-/sdd {메뉴명}      → 요구사항 수집 → 로드맵 MD 생성
 /feature {기능명}   → 요구사항 정의 → 로드맵 MD 생성
+/execute            → 로드맵 기반 태스크 순차 실행
 ```

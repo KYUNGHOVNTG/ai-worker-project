@@ -8,9 +8,9 @@
 
 ### 1단계: 백엔드 모델 + 마이그레이션
 
-```bash
+```powershell
 # 디렉토리 생성
-mkdir -p server/app/domain/{name}/{models,schemas,repositories,calculators,formatters}
+New-Item -ItemType Directory -Force -Path server\app\domain\{name}\models, server\app\domain\{name}\schemas, server\app\domain\{name}\repositories, server\app\domain\{name}\calculators, server\app\domain\{name}\formatters
 ```
 
 `server/app/domain/{name}/models/__init__.py`:
@@ -25,9 +25,9 @@ class MyModel(Base):
 ```
 
 마이그레이션:
-```bash
-alembic revision --autogenerate -m "YYYY-MM-DD-add-my-table"
-alembic upgrade head
+```powershell
+.venv\Scripts\alembic revision --autogenerate -m "YYYY-MM-DD-add-my-table"
+.venv\Scripts\alembic upgrade head
 ```
 
 ### 2단계: 백엔드 스키마
@@ -92,8 +92,8 @@ api_router.include_router({name}_router)
 
 ### 5단계: 프론트엔드
 
-```bash
-mkdir -p client/src/domains/{name}/{components,pages}
+```powershell
+New-Item -ItemType Directory -Force -Path client\src\domains\{name}\components, client\src\domains\{name}\pages
 ```
 
 파일 생성 순서:
@@ -140,18 +140,18 @@ import { MyPage } from './domains/{name}/pages';
 
 ## DB 마이그레이션 워크플로
 
-```bash
+```powershell
 # 1. 모델 수정
-#    server/app/domain/{name}/models/ 에서 ORM 모델 변경
+#    server\app\domain\{name}\models\ 에서 ORM 모델 변경
 
 # 2. 마이그레이션 파일 생성
-alembic revision --autogenerate -m "2026-03-26-add-user-table"
+.venv\Scripts\alembic revision --autogenerate -m "2026-03-26-add-user-table"
 
 # 3. 생성된 파일 검토
-#    alembic/versions/ 에서 방금 생성된 파일 확인
+#    alembic\versions\ 에서 방금 생성된 파일 확인
 
 # 4. 마이그레이션 적용
-alembic upgrade head
+.venv\Scripts\alembic upgrade head
 ```
 
 ---
@@ -190,7 +190,8 @@ import axios from 'axios';  // ❌
 
 백엔드 스키마 변경 후 반드시 실행:
 
-```bash
+```powershell
+# Git Bash 또는 make 설치된 환경에서:
 make sdd-sync
 ```
 
@@ -211,7 +212,8 @@ export type { MyItemResponse } from '@/types/api.generated';
 
 커밋 전 확인:
 
-```bash
+```powershell
+# Git Bash 또는 make 설치된 환경에서:
 make lint   # Python + TypeScript 전체 검사
 make test   # pytest + 프론트 lint
 ```

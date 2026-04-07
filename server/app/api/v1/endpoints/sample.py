@@ -39,8 +39,8 @@ async def list_sample(
     db: AsyncSession = Depends(get_database_session),
 ) -> ApiResponse[list[SampleDataResponse]]:
     service = SampleService(db)
-    items = await service.get_all()
-    return ApiResponse.ok(data=items)
+    result = await service.get_all()
+    return ApiResponse.ok(data=result.data)
 
 
 @router.get(
@@ -56,8 +56,8 @@ async def get_sample(
 ) -> ApiResponse[SampleDataResponse]:
     service = SampleService(db)
     try:
-        item = await service.get_by_id(item_id)
-        return ApiResponse.ok(data=item)
+        result = await service.get_by_id(item_id)
+        return ApiResponse.ok(data=result.data)
     except NotFoundException as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
 
@@ -74,8 +74,8 @@ async def create_sample(
     db: AsyncSession = Depends(get_database_session),
 ) -> ApiResponse[SampleDataResponse]:
     service = SampleService(db)
-    item = await service.create(request)
-    return ApiResponse.ok(data=item, message="생성 완료")
+    result = await service.create(request)
+    return ApiResponse.ok(data=result.data, message="생성 완료")
 
 
 @router.put(
@@ -92,8 +92,8 @@ async def update_sample(
 ) -> ApiResponse[SampleDataResponse]:
     service = SampleService(db)
     try:
-        item = await service.update(item_id, request)
-        return ApiResponse.ok(data=item, message="수정 완료")
+        result = await service.update(item_id, request)
+        return ApiResponse.ok(data=result.data, message="수정 완료")
     except NotFoundException as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
 

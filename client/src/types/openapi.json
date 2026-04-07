@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "mns_pms",
+    "title": "vibe-web-starter",
     "description": "\n        # AI 데이터 분석 웹 서비스 템플릿\n\n        FastAPI + SQLAlchemy 기반의 확장 가능한 백엔드 아키텍처\n\n        ## 주요 기능\n\n        - **도메인 플러그인 구조**: 새로운 도메인을 쉽게 추가 가능\n        - **계층화된 아키텍처**: Router → Service → Provider/Calculator/Formatter\n        - **타입 안전성**: Pydantic v2 + SQLAlchemy 2.0\n        - **비동기 처리**: async/await 기반\n\n        ## 아키텍처\n\n        ```\n        Router (FastAPI)\n            ↓\n        Service (비즈니스 로직 조율)\n            ↓\n        ├─ Provider (데이터 조회)\n        ├─ Calculator (계산/분석)\n        └─ Formatter (응답 포맷팅)\n        ```\n\n        ## 새 도메인 추가 방법\n\n        1. `server/app/examples/` 또는 `server/app/domain/` 에 새 디렉토리 생성\n        2. Provider, Calculator, Formatter, Service 구현\n        3. `server/app/api/v1/endpoints/` 에 라우터 추가\n        4. `server/app/api/v1/router.py` 에 라우터 등록\n        ",
     "version": "0.1.0"
   },

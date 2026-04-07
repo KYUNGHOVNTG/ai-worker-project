@@ -98,6 +98,6 @@ argument-hint: "[menu-or-symptom (optional)]"
 ## 주의사항
 
 - 수정 전 반드시 관련 파일을 읽고 분석한다 — 읽지 않은 파일을 수정하지 않는다
-- CLAUDE.md 규칙을 준수하여 수정한다 (SQLAlchemy 2.0, text() 바인딩, CodeMasterCache 등)
+- CLAUDE.md 규칙을 준수하여 수정한다 (SQLAlchemy 2.0, text() 바인딩 등)
 - 수정 범위를 최소화한다 — 오류와 무관한 리팩토링, 주석 추가, 스타일 변경 금지
-- `str(e)`를 HTTPException에 넣지 않는다 → `BusinessLogicException` 사용
+- `str(e)`를 HTTPException에 넣지 않는다 → `ApplicationException` 사용

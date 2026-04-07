@@ -14,15 +14,6 @@
 
 ## 환경 구성
 
-### macOS / Linux
-
-```bash
-make setup   # venv, pip, npm, .env, 마이그레이션, 시드 데이터 일괄 처리
-make dev     # 백엔드(:8000) + 프론트엔드(:5173) 동시 실행
-```
-
-### Windows
-
 ```powershell
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt -q
@@ -95,15 +86,12 @@ Supabase 사용 시 Connection string을 `postgresql://` → `postgresql+asyncpg
 
 ## Alembic 마이그레이션
 
-```bash
+```powershell
 # 마이그레이션 적용
-make migrate
+.venv\Scripts\alembic upgrade head
 
 # 새 마이그레이션 생성 (모델 변경 후)
-alembic revision --autogenerate -m "YYYY-MM-DD-설명"
-
-# 적용
-alembic upgrade head
+.venv\Scripts\alembic revision --autogenerate -m "YYYY-MM-DD-설명"
 ```
 
 **규칙**: 기존 마이그레이션 파일 수정 금지 (Append-only)
@@ -123,7 +111,8 @@ alembic upgrade head
 
 ## 코드 품질 도구
 
-```bash
+```powershell
+# Git Bash 또는 make 설치된 환경에서:
 make lint  # 전체 검사 (아래 도구 일괄 실행)
 ```
 

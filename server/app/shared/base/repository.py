@@ -56,10 +56,10 @@ class BaseRepository(ABC, Generic[TInput, TOutput]):
             3. 조회한 데이터를 TOutput 형태로 변환하여 반환
 
         Args:
-            input_data: Provider 입력 데이터
+            input_data: Repository 입력 데이터
 
         Returns:
-            TOutput: Provider 출력 데이터
+            TOutput: Repository 출력 데이터
 
         Raises:
             RepositoryException: 데이터 제공 중 오류 발생 시

@@ -42,8 +42,8 @@ async def register(
 ) -> ApiResponse[UserResponse]:
     service = AuthService(db)
     try:
-        user = await service.register(request)
-        return ApiResponse.ok(data=user, message="회원가입 완료")
+        result = await service.register(request)
+        return ApiResponse.ok(data=result.data, message="회원가입 완료")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
 
@@ -61,8 +61,8 @@ async def login(
 ) -> ApiResponse[TokenResponse]:
     service = AuthService(db)
     try:
-        token = await service.login(request)
-        return ApiResponse.ok(data=token)
+        result = await service.login(request)
+        return ApiResponse.ok(data=result.data)
     except UnauthorizedException as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -83,5 +83,5 @@ async def get_me(
     db: AsyncSession = Depends(get_database_session),
 ) -> ApiResponse[UserResponse]:
     service = AuthService(db)
-    user = await service.get_current_user(current_user["user_id"])
-    return ApiResponse.ok(data=user)
+    result = await service.get_current_user(current_user["user_id"])
+    return ApiResponse.ok(data=result.data)

@@ -168,11 +168,6 @@ class RepositoryOutput(BaseModel):
     pass
 
 
-# 하위 호환성을 위한 별칭 (deprecated)
-ProviderInput = RepositoryInput
-ProviderOutput = RepositoryOutput
-
-
 class CalculatorInput(BaseModel):
     """
     Calculator 입력 데이터 베이스

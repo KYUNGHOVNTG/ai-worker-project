@@ -2,6 +2,7 @@
 Auth Domain Repositories
 
 사용자 데이터 접근 계층입니다.
+DatabaseRepository를 상속하여 표준 아키텍처를 따릅니다.
 """
 
 from typing import Optional
@@ -10,14 +11,21 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.domain.auth.models import UserModel
+from server.app.shared.base.repository import DatabaseRepository
 from server.app.shared.exceptions import NotFoundException, RepositoryException
+from server.app.shared.types import RepositoryInput, RepositoryOutput
 
 
-class UserRepository:
-    """사용자 CRUD Repository"""
+class UserRepository(DatabaseRepository[RepositoryInput, RepositoryOutput]):
+    """
+    사용자 데이터 Repository
 
-    def __init__(self, db: AsyncSession) -> None:
-        self.db = db
+    DatabaseRepository를 상속하며, 인증 관련 조회는 개별 메서드로 제공합니다.
+    """
+
+    async def provide(self, input_data: RepositoryInput) -> RepositoryOutput:
+        """범용 데이터 조회 인터페이스 (인증 조회는 개별 메서드 사용)"""
+        return RepositoryOutput()
 
     async def get_by_email(self, email: str) -> Optional[UserModel]:
         """이메일로 사용자 조회 (없으면 None)"""

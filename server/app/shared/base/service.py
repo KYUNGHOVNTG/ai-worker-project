@@ -1,7 +1,7 @@
 """
 BaseService: 서비스 레이어 추상 클래스
 
-Facade Pattern을 통해 Provider, Calculator, Formatter를 조율합니다.
+Facade Pattern을 통해 Repository, Calculator, Formatter를 조율합니다.
 Template Method Pattern을 사용하여 비즈니스 로직의 흐름을 정의합니다.
 """
 
@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.shared.base.calculator import BaseCalculator
 from server.app.shared.base.formatter import BaseFormatter
-from server.app.shared.base.repository import BaseRepository as BaseProvider
+from server.app.shared.base.repository import BaseRepository
 from server.app.shared.types import ServiceResult
 
 # 제네릭 타입 변수
@@ -28,7 +28,7 @@ class BaseService(ABC, Generic[TRequest, TResponse]):
 
     책임:
         - 비즈니스 로직의 흐름 제어 (orchestration)
-        - Provider, Calculator, Formatter 조율
+        - Repository, Calculator, Formatter 조율
         - 트랜잭션 관리
         - 에러 처리 및 로깅
         - 권한 검증
@@ -40,7 +40,7 @@ class BaseService(ABC, Generic[TRequest, TResponse]):
     일반적인 흐름:
         1. 요청 데이터 검증 (validate_request)
         2. 권한 확인 (check_permissions)
-        3. 데이터 조회 (Provider)
+        3. 데이터 조회 (Repository)
         4. 비즈니스 로직 실행 (Calculator)
         5. 응답 포맷팅 (Formatter)
         6. 결과 반환
@@ -50,7 +50,7 @@ class BaseService(ABC, Generic[TRequest, TResponse]):
             def __init__(
                 self,
                 db: AsyncSession,
-                user_provider: UserDataProvider,
+                user_provider: UserDataRepository,
                 analysis_calculator: UserAnalysisCalculator,
                 response_formatter: UserResponseFormatter,
             ):
@@ -95,7 +95,7 @@ class BaseService(ABC, Generic[TRequest, TResponse]):
                     # 2. 권한 확인 (필요 시)
                     await self.check_permissions(request)
 
-                    # 3. 데이터 조회 (Provider)
+                    # 3. 데이터 조회 (Repository)
                     data = await self._fetch_data(request)
 
                     # 4. 비즈니스 로직 실행 (Calculator)

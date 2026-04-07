@@ -9,13 +9,9 @@ from server.app.shared.base.formatter import BaseFormatter
 from server.app.shared.base.repository import BaseRepository
 from server.app.shared.base.service import BaseService
 
-# 하위 호환성을 위한 별칭 (deprecated)
-BaseProvider = BaseRepository
-
 __all__ = [
     "BaseService",
     "BaseRepository",
     "BaseCalculator",
     "BaseFormatter",
-    "BaseProvider",  # deprecated, use BaseRepository instead
 ]

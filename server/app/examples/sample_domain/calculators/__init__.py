@@ -308,7 +308,7 @@ class SimpleMockCalculator(BaseCalculator[SimpleCalculatorInput, SimpleCalculato
     간단한 Mock 계산기
 
     GET /api/v1/sample 엔드포인트를 위한 교과서 예제입니다.
-    Provider에서 받은 데이터를 간단히 가공합니다.
+    Repository에서 받은 데이터를 간단히 가공합니다.
 
     책임:
         - 데이터 필터링 (status가 'active'인 것만)
@@ -327,7 +327,7 @@ class SimpleMockCalculator(BaseCalculator[SimpleCalculatorInput, SimpleCalculato
         데이터를 가공합니다.
 
         Args:
-            input_data: Provider에서 받은 원본 데이터
+            input_data: Repository에서 받은 원본 데이터
 
         Returns:
             SimpleCalculatorOutput: 가공된 데이터와 카운트

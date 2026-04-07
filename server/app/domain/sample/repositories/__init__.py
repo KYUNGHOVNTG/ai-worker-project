@@ -2,6 +2,7 @@
 Sample Domain Repositories
 
 데이터베이스 CRUD 접근 계층입니다.
+DatabaseRepository를 상속하여 표준 아키텍처를 따릅니다.
 """
 
 from typing import Optional
@@ -11,14 +12,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app.domain.sample.models import SampleDataModel
 from server.app.domain.sample.schemas import SampleDataCreate, SampleDataUpdate
+from server.app.shared.base.repository import DatabaseRepository
 from server.app.shared.exceptions import NotFoundException, RepositoryException
+from server.app.shared.types import RepositoryInput, RepositoryOutput
 
 
-class SampleDataRepository:
-    """샘플 데이터 CRUD Repository"""
+class SampleDataRepository(DatabaseRepository[RepositoryInput, RepositoryOutput]):
+    """
+    샘플 데이터 CRUD Repository
 
-    def __init__(self, db: AsyncSession) -> None:
-        self.db = db
+    DatabaseRepository를 상속하며, CRUD 작업은 개별 메서드로 제공합니다.
+    """
+
+    async def provide(self, input_data: RepositoryInput) -> RepositoryOutput:
+        """범용 데이터 조회 인터페이스 (CRUD는 개별 메서드 사용)"""
+        return RepositoryOutput()
 
     async def get_all(self) -> list[SampleDataModel]:
         """전체 목록 조회"""
